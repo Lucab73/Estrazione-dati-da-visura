@@ -143,10 +143,22 @@ def estrai_dati(filepath):
     return dati
 
 # Interfaccia Streamlit
-st.title("Estrazione Dati da PDF")
-st.write("Carica un file PDF per estrarre i dati e scaricare un file Excel.")
+st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
-uploaded_file = st.file_uploader("Carica un file PDF", type=["pdf"])
+# Header con titolo personalizzato
+st.markdown(
+    """
+    <h1 style="color:darkblue; text-align:center;">Estrazione Nominativi da Visura Camerale</h1>
+    <h3 style="color:gray; text-align:center;">Telemaco per Verifica Casellario</h3>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Sezione di caricamento file
+st.write("**Carica un file PDF di una visura camerale per estrarre i nominativi e scaricare i dati in formato Excel.**")
+
+# Caricamento del file PDF
+uploaded_file = st.file_uploader("Seleziona un file PDF", type=["pdf"])
 
 if uploaded_file is not None:
     # Salva il file caricato
@@ -154,13 +166,13 @@ if uploaded_file is not None:
         f.write(uploaded_file.read())
 
     # Estrai i dati
-    st.write("Elaborazione in corso...")
+    st.info("Elaborazione in corso, attendere qualche secondo...")
     dati = estrai_dati("uploaded_file.pdf")
 
     # Mostra i dati estratti
     if dati:
         df = pd.DataFrame(dati)
-        st.write("Dati estratti:")
+        st.success("Dati estratti con successo! Visualizza o scarica il file Excel.")
         st.dataframe(df)
 
         # Consenti il download del file Excel
@@ -168,10 +180,17 @@ if uploaded_file is not None:
         df.to_excel(output_path, index=False)
         with open(output_path, "rb") as f:
             st.download_button(
-                label="Scarica il file Excel",
+                label="📥 Scarica il file Excel",
                 data=f,
                 file_name="dati_estratti.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
     else:
-        st.write("Nessun dato trovato nel file PDF.")
+        st.warning("⚠️ Nessun dato trovato nel file PDF.")
+
+# Barra laterale (opzionale)
+with st.sidebar:
+    st.markdown("### Informazioni sull'app:")
+    st.write("Questa applicazione consente di estrarre nominativi, codici fiscali e altre informazioni dai file PDF delle visure camerali.")
+    st.write("Versione: 1.0")
+    st.write("Sviluppata da Luca Bruzzi")
