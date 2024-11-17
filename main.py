@@ -214,6 +214,6 @@ if uploaded_file is not None:
 # Barra laterale (opzionale)
 with st.sidebar:
     st.markdown("### Informazioni sull'app:")
-    st.write("Questa applicazione consente di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco.")
+    st.write("Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli presso il Casellario Giudiziale.")
     st.write("Versione: 1.0")
     st.write("Sviluppata da Luca Bruzzi")
