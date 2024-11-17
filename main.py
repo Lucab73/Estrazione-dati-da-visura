@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import openpyxl
 from PyPDF2 import PdfReader
 import re
 
@@ -176,13 +177,35 @@ if uploaded_file is not None:
         st.dataframe(df)
 
         # Consenti il download del file Excel
-        output_path = "dati_estratti.xlsx"
-        df.to_excel(output_path, index=False)
+        output_path = "Elenco per casellario.xlsx"
+
+        # Esporta il DataFrame in Excel usando pandas
+        df.to_excel (output_path, index=False, engine='openpyxl')
+
+        # Adatta le colonne al contenuto
+        wb = openpyxl.load_workbook (output_path)
+        ws = wb.active
+
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column_letter  # Ottieni la lettera della colonna
+            for cell in col:
+                try:  # Calcola la lunghezza massima del contenuto
+                    if cell.value:
+                        max_length = max (max_length, len (str (cell.value)))
+                except:
+                    pass
+            adjusted_width = max_length + 2  # Aggiungi un margine
+            ws.column_dimensions[column].width = adjusted_width
+
+        # Salva il file con le colonne adattate
+        wb.save (output_path)
+
         with open(output_path, "rb") as f:
             st.download_button(
                 label="📥 Scarica il file Excel",
                 data=f,
-                file_name="dati_estratti.xlsx",
+                file_name="Elenco per casellario.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
     else:
