@@ -148,14 +148,14 @@ st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout=
 # Header con titolo personalizzato
 st.markdown(
     """
-    <h1 style="color:darkblue; text-align:center;">Estrazione Nominativi da Visura Camerale</h1>
-    <h3 style="color:gray; text-align:center;">Telemaco per Verifica Casellario</h3>
+    <h1 style="color:darkblue; text-align:center;">Estrazione Nominativi da Visura Camerale TELEMACO</h1>
+    <h3 style="color:gray; text-align:center;">per verifiche presso il Casellario</h3>
     """,
     unsafe_allow_html=True,
 )
 
 # Sezione di caricamento file
-st.write("**Carica un file PDF di una visura camerale per estrarre i nominativi e scaricare i dati in formato Excel.**")
+st.write("**Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi e scaricare i dati in formato Excel.**")
 
 # Caricamento del file PDF
 uploaded_file = st.file_uploader("Seleziona un file PDF", type=["pdf"])
@@ -191,6 +191,6 @@ if uploaded_file is not None:
 # Barra laterale (opzionale)
 with st.sidebar:
     st.markdown("### Informazioni sull'app:")
-    st.write("Questa applicazione consente di estrarre nominativi, codici fiscali e altre informazioni dai file PDF delle visure camerali.")
+    st.write("Questa applicazione consente di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco.")
     st.write("Versione: 1.0")
     st.write("Sviluppata da Luca Bruzzi")
