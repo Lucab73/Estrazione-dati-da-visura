@@ -42,6 +42,7 @@ def estrai_dati(filepath):
     # Lista delle possibili sezioni da cercare
     sezioni_da_cercare = [
         "Soci e titolari di diritti su azioni e quote",
+        "Soci e titolari di cariche o qualifiche",
         "Amministratori",
         "Sindaci, membri organi di controllo",
         "Titolari di altre cariche o qualifiche",
