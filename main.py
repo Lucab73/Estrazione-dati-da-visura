@@ -14,6 +14,9 @@ def estrai_dati(filepath):
 
     righe = text.splitlines ()
 
+    # Debug: Stampa le prime 500 righe del testo
+    print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
+
     # Lista delle sezioni che determinano la fine della ricerca
     sezioni_fine = [
         "Trasferimenti d'azienda, fusioni, scissioni, subentri",
@@ -75,15 +78,42 @@ def estrai_dati(filepath):
 
     # Regex e funzioni di supporto
     pattern_cf = r"\b[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]\b"
-    codici_trovati = {}  # Dizionario invece di set
+    codici_trovati = {} # Dizionario invece di set
     dati = []
 
     def verifica_cognome(nome, codice_fiscale):
+        """
+        Verifica se le prime 3 lettere del codice fiscale sono presenti nel cognome
+        e se la seconda parola è parte del cognome o del nome.
+        """
         prime_3_lettere = codice_fiscale[:3]
-        for parola in nome.split ():
-            if all (lettera in parola for lettera in prime_3_lettere):
-                return True
-        return False
+        successive_3_lettere = codice_fiscale[3:6]
+        quinto_sesto_carattere = codice_fiscale[4:6]
+
+        parole = nome.split ()
+
+        if len (parole) >= 2:
+            prima_parola = parole[0]
+            seconda_parola = parole[1]
+
+            # Verifica se le prime 3 lettere del codice fiscale sono nella prima parola
+            if all (lettera in prima_parola for lettera in prime_3_lettere):
+                # Verifica se le successive 3 lettere sono nella seconda parola
+                if len (parole) == 2:
+                    if all (lettera in seconda_parola for lettera in successive_3_lettere):
+                        return True  # Il nome è già separato correttamente
+                    else:
+                        return False  # Non trovate nella seconda parola, quindi non è separato correttamente
+                elif len (parole) >= 3:  # Caso con più di due parole
+                    terza_parola = parole[2]
+                    if all (lettera in seconda_parola for lettera in successive_3_lettere) or \
+                            all (lettera in terza_parola for lettera in quinto_sesto_carattere):
+                        return True  # Nome correttamente separato
+                    else:
+                        return False  # Se non trovato in seconda o terza parola
+        else:
+            # Caso base: una sola parola o non corrisponde
+            return all (lettera in parole[0] for lettera in prime_3_lettere)
 
     def rimuovi_numeri(riga):
         return re.sub (r"\d+", "", riga).strip ()
@@ -128,12 +158,13 @@ def estrai_dati(filepath):
                             break  # Usciamo dal ciclo non appena troviamo un nome valido
 
                 if nome_trovato:
-                    cognome_candidato = nome_completo[0]
+
+                    cognome_candidato = " ".join (nome_completo)
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
-                        cognome = " ".join (nome_completo[:2])
+                        cognome = " ".join (nome_completo[:2])  # Cognome = prime due parole
                         nomi = " ".join (nome_completo[2:]) if len (nome_completo) > 2 else ""
                     else:
-                        cognome = cognome_candidato
+                        cognome = nome_completo[0]  # Cognome = prima parola
                         nomi = " ".join (nome_completo[1:])
 
                     # Se il codice fiscale è già presente
