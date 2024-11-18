@@ -14,6 +14,9 @@ def estrai_dati(filepath):
 
     righe = text.splitlines ()
 
+    # Debug: Stampa le prime 500 righe del testo
+    print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
+
     # Lista delle sezioni che determinano la fine della ricerca
     sezioni_fine = [
         "Trasferimenti d'azienda, fusioni, scissioni, subentri",
@@ -101,9 +104,14 @@ def estrai_dati(filepath):
                     continue
                 codici_trovati.add (codice_fiscale)
 
-                # Analisi multi-riga per tutte le sezioni
+                # Analisi progressiva delle righe, partendo dalla riga corrente
                 nome_completo = []
-                for offset in range (-2, 1):
+                nome_trovato = False
+
+                # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
+                offsets_da_provare = [0, -1, -2, -3]
+
+                for offset in offsets_da_provare:
                     index = i + offset
                     if 0 <= index < len (righe):
                         riga_corrente = rimuovi_numeri (righe[index].strip ())
@@ -111,13 +119,20 @@ def estrai_dati(filepath):
                             continue
 
                         parole = riga_corrente.split ()
+                        parole_valide = []
                         for parola in parole:
                             if is_valid_word (parola):
-                                nome_completo.append (parola)
+                                parole_valide.append (parola)
                             elif parola.islower ():
                                 break
 
-                if nome_completo:
+                        # Se troviamo parole valide in questa riga
+                        if parole_valide:
+                            nome_completo = parole_valide
+                            nome_trovato = True
+                            break  # Usciamo dal ciclo non appena troviamo un nome valido
+
+                if nome_trovato:
                     cognome_candidato = nome_completo[0]
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
                         cognome = " ".join (nome_completo[:2])
