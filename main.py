@@ -7,43 +7,75 @@ import re
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
     # Caricamento del PDF
-    reader = PdfReader(filepath)
+    reader = PdfReader (filepath)
     text = ""
     for page in reader.pages:
-        text += page.extract_text()
+        text += page.extract_text ()
 
     righe = text.splitlines ()
-    # Trova la seconda occorrenza della sezione target
-    target_sezione = "Trasferimenti d'azienda, fusioni, scissioni, subentri"
-    righe_target = [i for i, riga in enumerate (righe) if target_sezione in riga]
 
-    if len (righe_target) < 2:
-        print (f"Non è stata trovata una seconda occorrenza della sezione '{target_sezione}'.")
+    # Lista delle sezioni che determinano la fine della ricerca
+    sezioni_fine = [
+        "Trasferimenti d'azienda, fusioni, scissioni, subentri",
+        "Attivita', albi ruoli e licenze",
+        "Storia delle modifiche"
+    ]
+
+    # Trova la seconda occorrenza di una qualsiasi delle sezioni di fine
+    occorrenze_sezioni = {}
+    for sezione in sezioni_fine:
+        occorrenze = [i for i, riga in enumerate (righe) if sezione in riga]
+        if len (occorrenze) >= 2:
+            occorrenze_sezioni[sezione] = occorrenze[1]  # Prendi la seconda occorrenza
+
+    if not occorrenze_sezioni:
+        print ("Non è stata trovata una seconda occorrenza di nessuna delle sezioni di fine.")
         return []
 
-    riga_fine = righe_target[1]  # Ottieni l'indice della seconda occorrenza
-    # Limita le righe fino alla seconda occorrenza
+    # Prendi la prima seconda occorrenza tra tutte le sezioni trovate
+    riga_fine = min (occorrenze_sezioni.values ())
+
+    # Limita le righe fino alla seconda occorrenza della prima sezione di fine trovata
     righe = righe[:riga_fine]
+    testo_completo = "\n".join (righe)
 
-    # Debug: Stampa le prime 500 righe del testo
-    #print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
+    # Lista delle possibili sezioni da cercare
+    sezioni_da_cercare = [
+        "Soci e titolari di diritti su azioni e quote",
+        "Amministratori",
+        "Sindaci, membri organi di controllo",
+        "Titolari di altre cariche o qualifiche",
+        "Titolari di cariche o qualifiche"
 
-    # Prosegui con l'estrazione dei dati
-    sezioni = "\n".join (righe).split ("Soci e titolari di diritti su azioni e quote", 2)
-    if len (sezioni) < 2:
-        print ("La sezione 'Soci e titolari di diritti su azioni e quote' non è stata trovata.")
-        return []
+        # Aggiungi qui altre sezioni che potrebbero essere presenti
+    ]
 
-    fine_sezione = sezioni[-1]
-    sezioni_amministratori = fine_sezione.split("Amministratori", 1)
-    soci_e_titolari_text = sezioni_amministratori[0]
-    amministratori_text = sezioni_amministratori[1] if len(sezioni_amministratori) > 1 else ""
+    # Trova tutte le sezioni presenti nel testo
+    sezioni_trovate = []
+    testo_sezioni = {}
 
-    # Regex per identificare i codici fiscali
+    for i, sezione in enumerate (sezioni_da_cercare):
+        indici = [m.start () for m in re.finditer (re.escape (sezione), testo_completo)]
+        for indice in indici:
+            sezioni_trovate.append ((indice, sezione))
+
+    # Ordina le sezioni per posizione nel testo
+    sezioni_trovate.sort ()
+
+    # Estrai il testo per ogni sezione
+    for i, (pos, sezione) in enumerate (sezioni_trovate):
+        inizio = pos + len (sezione)
+        if i < len (sezioni_trovate) - 1:
+            fine = sezioni_trovate[i + 1][0]
+        else:
+            fine = len (testo_completo)
+
+        testo_sezioni[sezione] = testo_completo[inizio:fine].strip ()
+
+    # Regex e funzioni di supporto
     pattern_cf = r"\b[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]\b"
-
+    codici_trovati = set ()
     dati = []
-    codici_trovati = set()  # Set per tenere traccia dei codici fiscali già trovati
 
     def verifica_cognome(nome, codice_fiscale):
         prime_3_lettere = codice_fiscale[:3]
@@ -52,94 +84,58 @@ def estrai_dati(filepath):
                 return True
         return False
 
-    # Funzione di utilità: rimuovere numeri dalla riga per analisi nomi e cognomi
     def rimuovi_numeri(riga):
-        return re.sub(r"\d+", "", riga).strip()
+        return re.sub (r"\d+", "", riga).strip ()
 
     def is_valid_word(parola):
-        """Verifica se una parola è composta solo da maiuscole, accenti e trattini."""
-        for lettera in parola:
-            if lettera not in "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÈÌÒÙàèìòù’'\"-":
-                return False
-        return True
+        return all (lettera in "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÈÌÒÙàèìòù''\"-" for lettera in parola)
 
-    # Elaborazione sezione "Soci e titolari di diritti su azioni e quote"
-    righe_soci = soci_e_titolari_text.splitlines()
-    for riga in righe_soci:
-        match_cf = re.search(pattern_cf, riga)  # Cerca il codice fiscale nella riga originale
-        if match_cf:
-            codice_fiscale = match_cf.group()
-            if codice_fiscale in codici_trovati:
-                continue  # Salta se il codice fiscale è già stato trovato
-            codici_trovati.add(codice_fiscale)
+    def elabora_sezione(testo_sezione, tipo_sezione):
+        righe = testo_sezione.splitlines ()
 
-            # Analizza nomi e cognomi rimuovendo i numeri
-            riga_pulita = rimuovi_numeri(riga)
-            parole = riga_pulita.split()
-            nome_completo = []
+        for i, riga in enumerate (righe):
+            match_cf = re.search (pattern_cf, riga)
+            if match_cf:
+                codice_fiscale = match_cf.group ()
+                if codice_fiscale in codici_trovati:
+                    continue
+                codici_trovati.add (codice_fiscale)
 
-            for parola in parole:
-                if is_valid_word (parola):
-                    nome_completo.append (parola)
-                elif parola.islower ():
-                    break
+                # Analisi multi-riga per tutte le sezioni
+                nome_completo = []
+                for offset in range (-2, 1):
+                    index = i + offset
+                    if 0 <= index < len (righe):
+                        riga_corrente = rimuovi_numeri (righe[index].strip ())
+                        if riga_corrente and not riga_corrente.split ()[0].isupper ():
+                            continue
 
-            if nome_completo:
-                cognome_candidato = nome_completo[0]
-                # Verifica se il cognome è composto
-                if not verifica_cognome (cognome_candidato, codice_fiscale):
-                    cognome = " ".join (nome_completo[:2])  # Considera le prime due parole come cognome
-                    nomi = " ".join (nome_completo[2:]) if len (nome_completo) > 2 else ""
-                else:
-                    cognome = cognome_candidato
-                    nomi = " ".join (nome_completo[1:])
-                dati.append ({
-                    "Cognome": cognome,
-                    "Nomi": nomi,
-                    "Codice Fiscale": codice_fiscale
-                })
+                        parole = riga_corrente.split ()
+                        for parola in parole:
+                            if is_valid_word (parola):
+                                nome_completo.append (parola)
+                            elif parola.islower ():
+                                break
 
-    # Elaborazione sezione "Amministratori"
-    righe_amministratori = amministratori_text.splitlines()
-    for i, riga in enumerate(righe_amministratori):
-        match_cf = re.search(pattern_cf, riga)  # Cerca il codice fiscale nella riga originale
-        if match_cf:
-            codice_fiscale = match_cf.group()
-            if codice_fiscale in codici_trovati:
-                continue  # Salta se il codice fiscale è già stato trovato
-            codici_trovati.add(codice_fiscale)
+                if nome_completo:
+                    cognome_candidato = nome_completo[0]
+                    if not verifica_cognome (cognome_candidato, codice_fiscale):
+                        cognome = " ".join (nome_completo[:2])
+                        nomi = " ".join (nome_completo[2:]) if len (nome_completo) > 2 else ""
+                    else:
+                        cognome = cognome_candidato
+                        nomi = " ".join (nome_completo[1:])
 
-            # Analizza le righe -2, -1 e quella corrente
-            nome_completo = []
-            for offset in range(-2, 1):  # Da riga -2 alla riga corrente inclusa
-                index = i + offset
-                if 0 <= index < len(righe_amministratori):
-                    riga_corrente = rimuovi_numeri(righe_amministratori[index].strip())
-                    # Ignora la riga se inizia con una parola non tutta maiuscola
-                    if riga_corrente and not riga_corrente.split()[0].isupper():
-                        continue
+                    dati.append ({
+                        "Cognome": cognome,
+                        "Nomi": nomi,
+                        "Codice Fiscale": codice_fiscale,
+                        "Sezione": tipo_sezione
+                    })
 
-                    parole = riga_corrente.split()
-                    for parola in parole:
-                        if is_valid_word (parola):
-                            nome_completo.append (parola)
-                        elif parola.islower ():
-                            break
-
-            if nome_completo:
-                cognome_candidato = nome_completo[0]
-                # Verifica se il cognome è composto
-                if not verifica_cognome (cognome_candidato, codice_fiscale):
-                    cognome = " ".join (nome_completo[:2])  # Considera le prime due parole come cognome
-                    nomi = " ".join (nome_completo[2:]) if len (nome_completo) > 2 else ""
-                else:
-                    cognome = cognome_candidato
-                    nomi = " ".join (nome_completo[1:])
-                dati.append ({
-                    "Cognome": cognome,
-                    "Nomi": nomi,
-                    "Codice Fiscale": codice_fiscale
-                })
+    # Elabora tutte le sezioni trovate
+    for sezione, testo in testo_sezioni.items ():
+        elabora_sezione (testo, sezione)
 
     return dati
 
