@@ -14,9 +14,6 @@ def estrai_dati(filepath):
 
     righe = text.splitlines ()
 
-    # Debug: Stampa le prime 500 righe del testo
-    print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
-
     # Lista delle sezioni che determinano la fine della ricerca
     sezioni_fine = [
         "Trasferimenti d'azienda, fusioni, scissioni, subentri",
@@ -77,7 +74,7 @@ def estrai_dati(filepath):
 
     # Regex e funzioni di supporto
     pattern_cf = r"\b[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]\b"
-    codici_trovati = set ()
+    codici_trovati = {}  # Dizionario invece di set
     dati = []
 
     def verifica_cognome(nome, codice_fiscale):
@@ -100,9 +97,6 @@ def estrai_dati(filepath):
             match_cf = re.search (pattern_cf, riga)
             if match_cf:
                 codice_fiscale = match_cf.group ()
-                if codice_fiscale in codici_trovati:
-                    continue
-                codici_trovati.add (codice_fiscale)
 
                 # Analisi progressiva delle righe, partendo dalla riga corrente
                 nome_completo = []
@@ -141,12 +135,22 @@ def estrai_dati(filepath):
                         cognome = cognome_candidato
                         nomi = " ".join (nome_completo[1:])
 
-                    dati.append ({
-                        "Cognome": cognome,
-                        "Nomi": nomi,
-                        "Codice Fiscale": codice_fiscale,
-                        "Sezione": tipo_sezione
-                    })
+                    # Se il codice fiscale è già presente
+                    if codice_fiscale in codici_trovati:
+                        # Aggiorna il record esistente aggiungendo la nuova sezione
+                        for record in dati:
+                            if record["Codice Fiscale"] == codice_fiscale:
+                                if tipo_sezione not in record["Sezione"].split (", "):
+                                    record["Sezione"] = f"{record['Sezione']}, {tipo_sezione}"
+                    else:
+                        # Crea un nuovo record
+                        codici_trovati[codice_fiscale] = True
+                        dati.append ({
+                            "Cognome": cognome,
+                            "Nomi": nomi,
+                            "Codice Fiscale": codice_fiscale,
+                            "Sezione": tipo_sezione
+                        })
 
     # Elabora tutte le sezioni trovate
     for sezione, testo in testo_sezioni.items ():
