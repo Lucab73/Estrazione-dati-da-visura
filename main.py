@@ -13,7 +13,7 @@ def estrai_dati(filepath):
         text += page.extract_text ()
 
     righe = text.splitlines ()
-    
+
     # Estrarre la ragione sociale
     ragione_sociale = ""
     for i, riga in enumerate (righe):
@@ -44,7 +44,6 @@ def estrai_dati(filepath):
 
             # Analizza la prima riga per estrarre il Comune e la Via
             for parola in parti[2:]:  # Ignora "Indirizzo Sede"
-                print (f"Parola analizzata: {parola}")  # Debug
                 if not trovato_comune:
                     # Aggiungi al Comune solo parole che iniziano con una maiuscola
                     if parola[0].isupper ():
@@ -296,10 +295,10 @@ if uploaded_file is not None:
         st.dataframe(df)
 
         # Mostra la ragione sociale, il comune e la via
-        st.subheader ("Dettagli Aggiuntivi:")
+        st.subheader ("Dati Societari:")
         st.write (f"**Ragione Sociale:** {ragione_sociale}")
-        st.write (f"**Comune:** {comune}")
-        st.write (f"**Via:** {via}")
+        st.write (f"**Sede legale:** {comune}")
+        st.write (f"**Indirizzo:** {via}")
 
         # Consenti il download del file Excel
         output_path = "Elenco per casellario.xlsx"
