@@ -290,10 +290,10 @@ if uploaded_file is not None:
 
     # Mostra i dati estratti (Ragione Sociale, Comune, Via)
     if dati:
-        # Ragione Sociale
-        ragione_sociale = dati.get ('ragione_sociale', 'Non disponibile')
-        comune = dati.get ('comune', 'Non disponibile')
-        via = dati.get ('via', 'Non disponibile')
+        # Assicurati che ci siano dati
+        ragione_sociale = dati[0].get ('Ragione Sociale', 'Non disponibile')
+        comune = dati[0].get ('Comune', 'Non disponibile')
+        via = dati[0].get ('Via', 'Non disponibile')
 
         # Visualizza i dati estratti sulla pagina
         st.success ("Dati estratti con successo!")
