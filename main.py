@@ -13,7 +13,77 @@ def estrai_dati(filepath):
         text += page.extract_text ()
 
     righe = text.splitlines ()
+    
+    # Estrarre la ragione sociale
+    ragione_sociale = ""
+    for i, riga in enumerate (righe):
+        if "VISURA" in riga:
+            # Ragione sociale inizia due righe dopo "VISURA"
+            inizio = i + 2
+            fine = inizio + 3  # Include 3 righe dopo
+            ragione_sociale = " ".join (righe[inizio:fine]).strip ()
+            break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
 
+    # Se non troviamo "VISURA", avvisiamo
+    if not ragione_sociale:
+        print ("Non è stato possibile trovare la ragione sociale.")
+    else:
+        print (f"Ragione Sociale estratta: {ragione_sociale}")
+
+    # Estrarre l'indirizzo (Comune e Via)
+    comune = ""
+    via = ""
+
+    for i, riga in enumerate (righe):
+        if "Indirizzo Sede" in riga:
+            # Trova il Comune e la Via
+            parti = riga.split ()
+            comune_parole = []
+            via_parole = []
+            trovato_comune = False
+
+            # Analizza la prima riga per estrarre il Comune e la Via
+            for parola in parti[2:]:  # Ignora "Indirizzo Sede"
+                print (f"Parola analizzata: {parola}")  # Debug
+                if not trovato_comune:
+                    # Aggiungi al Comune solo parole che iniziano con una maiuscola
+                    if parola[0].isupper ():
+                        comune_parole.append (parola)
+                    # Se trovi una parentesi chiusa, il Comune è completo
+                    if ")" in parola:
+                        comune_parole.append (parola)  # Aggiungi la sigla del Comune
+                        trovato_comune = True
+                elif trovato_comune:
+                    # Aggiungi la parola alla via, ma non includere numeri o CAP
+                    if "CAP" in parola:
+                        break  # Interrompi l'analisi delle parole dopo "CAP"
+                    via_parole.append (parola)
+
+            # Se la riga successiva contiene il CAP, aggiungi la parte della via senza il CAP
+            if i + 1 < len (righe):  # Controlla se esiste una riga successiva
+                riga_successiva = righe[i + 1]
+                parti_successiva = riga_successiva.split ()
+                for parola in parti_successiva:
+                    if "CAP" in parola:
+                        break  # Interrompi se trovi "CAP" nella riga successiva
+                    via_parole.append (parola)
+
+            # Risultato
+            comune = " ".join (comune_parole).strip ()
+            via = " ".join (via_parole).strip ()
+
+            # Rimuovi tutte le parole dopo il CAP, incluso CAP stesso
+            if "CAP" in via:
+                via = via.split ("CAP")[0].strip ()
+
+            break  # Esci dal ciclo dopo aver trovato la prima occorrenza
+
+    # Se non troviamo "Indirizzo Sede", avvisiamo
+    if not comune or not via:
+        print ("Non è stato possibile trovare il Comune o la Via.")
+    else:
+        print (f"Comune estratto: {comune}")
+        print (f"Via estratta: {via}")
     # Debug: Stampa le prime 500 righe del testo
     print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
 
@@ -230,7 +300,7 @@ if uploaded_file is not None:
         st.write (f"**Ragione Sociale:** {ragione_sociale}")
         st.write (f"**Comune:** {comune}")
         st.write (f"**Via:** {via}")
-        
+
         # Consenti il download del file Excel
         output_path = "Elenco per casellario.xlsx"
 
