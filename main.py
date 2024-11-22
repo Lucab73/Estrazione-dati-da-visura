@@ -4,7 +4,6 @@ import openpyxl
 from PyPDF2 import PdfReader
 import re
 
-# Funzione per estrarre i dati
 def estrai_dati(filepath):
     # Caricamento del PDF
     reader = PdfReader (filepath)
@@ -14,12 +13,84 @@ def estrai_dati(filepath):
 
     righe = text.splitlines ()
 
+    # Estrarre la ragione sociale
+    ragione_sociale = ""
+    for i, riga in enumerate (righe):
+        if "VISURA" in riga:
+            # Ragione sociale inizia due righe dopo "VISURA"
+            inizio = i + 2
+            fine = inizio + 3  # Include 3 righe dopo
+            ragione_sociale = " ".join (righe[inizio:fine]).strip ()
+            break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
+
+    # Se non troviamo "VISURA", avvisiamo
+    if not ragione_sociale:
+        print ("Non è stato possibile trovare la ragione sociale.")
+    else:
+        print (f"Ragione Sociale estratta: {ragione_sociale}")
+
+    # Estrarre l'indirizzo (Comune e Via)
+    comune = ""
+    via = ""
+
+    for i, riga in enumerate (righe):
+        if "Indirizzo Sede" in riga:
+            # Trova il Comune e la Via
+            parti = riga.split ()
+            comune_parole = []
+            via_parole = []
+            trovato_comune = False
+
+            # Analizza la prima riga per estrarre il Comune e la Via
+            for parola in parti[2:]:  # Ignora "Indirizzo Sede"
+                print (f"Parola analizzata: {parola}")  # Debug
+                if not trovato_comune:
+                    # Aggiungi al Comune solo parole che iniziano con una maiuscola
+                    if parola[0].isupper ():
+                        comune_parole.append (parola)
+                    # Se trovi una parentesi chiusa, il Comune è completo
+                    if ")" in parola:
+                        comune_parole.append (parola)  # Aggiungi la sigla del Comune
+                        trovato_comune = True
+                elif trovato_comune:
+                    # Aggiungi la parola alla via, ma non includere numeri o CAP
+                    if "CAP" in parola:
+                        break  # Interrompi l'analisi delle parole dopo "CAP"
+                    via_parole.append (parola)
+
+            # Se la riga successiva contiene il CAP, aggiungi la parte della via senza il CAP
+            if i + 1 < len (righe):  # Controlla se esiste una riga successiva
+                riga_successiva = righe[i + 1]
+                parti_successiva = riga_successiva.split ()
+                for parola in parti_successiva:
+                    if "CAP" in parola:
+                        break  # Interrompi se trovi "CAP" nella riga successiva
+                    via_parole.append (parola)
+
+            # Risultato
+            comune = " ".join (comune_parole).strip ()
+            via = " ".join (via_parole).strip ()
+
+            # Rimuovi tutte le parole dopo il CAP, incluso CAP stesso
+            if "CAP" in via:
+                via = via.split ("CAP")[0].strip ()
+
+            break  # Esci dal ciclo dopo aver trovato la prima occorrenza
+
+    # Se non troviamo "Indirizzo Sede", avvisiamo
+    if not comune or not via:
+        print ("Non è stato possibile trovare il Comune o la Via.")
+    else:
+        print (f"Comune estratto: {comune}")
+        print (f"Via estratta: {via}")
+
     # Debug: Stampa le prime 500 righe del testo
-    print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
+    #print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
 
     # Lista delle sezioni che determinano la fine della ricerca
     sezioni_fine = [
         "Trasferimenti d'azienda, fusioni, scissioni, subentri",
+        "Trasferimenti d'azienda, subentri"
         "Attivita', albi ruoli e licenze",
         "Storia delle modifiche"
     ]
@@ -217,11 +288,24 @@ if uploaded_file is not None:
     st.info("Elaborazione in corso, attendere qualche secondo...")
     dati = estrai_dati("uploaded_file.pdf")
 
-    # Mostra i dati estratti
+    # Mostra i dati estratti (Ragione Sociale, Comune, Via)
     if dati:
-        df = pd.DataFrame(dati)
-        st.success("Dati estratti con successo! Visualizza o scarica il file Excel.")
-        st.dataframe(df)
+        # Ragione Sociale
+        ragione_sociale = dati.get ('ragione_sociale', 'Non disponibile')
+        comune = dati.get ('comune', 'Non disponibile')
+        via = dati.get ('via', 'Non disponibile')
+
+        # Visualizza i dati estratti sulla pagina
+        st.success ("Dati estratti con successo!")
+
+        st.subheader ("Dettagli Sede Legale")
+        st.write (f"**Ragione Sociale:** {ragione_sociale}")
+        st.write (f"**Comune:** {comune}")
+        st.write (f"**Via:** {via}")
+
+        # Mostra i dati in un dataframe
+        df = pd.DataFrame (dati)
+        st.dataframe (df)
 
         # Consenti il download del file Excel
         output_path = "Elenco per casellario.xlsx"
@@ -248,19 +332,20 @@ if uploaded_file is not None:
         # Salva il file con le colonne adattate
         wb.save (output_path)
 
-        with open(output_path, "rb") as f:
-            st.download_button(
+        with open (output_path, "rb") as f:
+            st.download_button (
                 label="📥 Scarica il file Excel",
                 data=f,
                 file_name="Elenco per casellario.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
     else:
-        st.warning("⚠️ Nessun dato trovato nel file PDF.")
+        st.warning ("⚠️ Nessun dato trovato nel file PDF.")
 
 # Barra laterale (opzionale)
 with st.sidebar:
-    st.markdown("### Informazioni sull'app:")
-    st.write("Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli presso il Casellario Giudiziale.")
-    st.write("Versione: 1.0")
-    st.write("Sviluppata da Luca Bruzzi")
+    st.markdown ("### Informazioni sull'app:")
+    st.write (
+        "Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli presso il Casellario Giudiziale.")
+    st.write ("Versione: 1.0")
+    st.write ("Sviluppata da Luca Bruzzi")
