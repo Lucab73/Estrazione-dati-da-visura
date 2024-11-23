@@ -313,35 +313,27 @@ def estrai_dati(filepath):
 # Interfaccia Streamlit
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
-# Header con titolo personalizzato e animazione
-st.markdown (
-    """
-    <div style="text-align: center; padding: 2rem 0;">
-        <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
-            Estrazione Nominativi da Visura Camerale TELEMACO
-        </h1>
-        <h3 style="color: #576574; font-weight: normal;">
-            per verifiche presso il Casellario
-        </h3>
+# Contenitore principale con stile migliorato
+st.markdown("""
+    <div style="background: #f8f9fa; 
+                padding: 1.5rem; 
+                border-radius: 10px; 
+                border: 2px dashed #1e3799;
+                margin-bottom: 1rem;
+                text-align: center;">
+        <h4 style="color: #1e3799; margin-bottom: 1rem;">
+            📤 Carica un file PDF di una visura camerale Telemaco
+        </h4>
+        <p style="color: #576574; margin-bottom: 0;">
+            Trascina qui il file o utilizza il pulsante di selezione per estrarre i nominativi e scaricare i dati in formato Excel
+        </p>
     </div>
-    """,
-    unsafe_allow_html=True,
-)
+    """, unsafe_allow_html=True)
 
-# Contenitore principale con bordo e ombreggiatura
-with st.container ():
-    st.markdown ("""
-        <div style="padding: 1.5rem; border-radius: 10px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        </div>
-        """, unsafe_allow_html=True)
+# Caricamento del file PDF
+uploaded_file = st.file_uploader ("Seleziona un file PDF", type=["pdf"])
 
-    st.write (
-        "**📤 Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi e scaricare i dati in formato Excel.**")
-
-    # Caricamento del file PDF
-    uploaded_file = st.file_uploader ("Seleziona un file PDF", type=["pdf"])
-
-    if uploaded_file is not None:
+if uploaded_file is not None:
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
