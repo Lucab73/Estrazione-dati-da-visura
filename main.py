@@ -15,36 +15,7 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Nascondi il testo predefinito (Drag and drop files here) */
-    .stFileUploader span {
-        display: none !important;
-    }
-    /* Aggiungi testo personalizzato sopra il pulsante */
-    div.stFileUploader {
-        position: relative;
-        border: 2px dashed #1e3799 !important;
-        border-radius: 10px !important;
-        background-color: #f8f9fa !important;
-        padding: 2rem !important;
-        text-align: center;
-    }
-    div.stFileUploader:before {
-        content: "📤 Carica un file PDF di una visura camerale Telemaco. Trascina qui il file o utilizza il pulsante di selezione";
-        color: #576574;
-        font-size: 1rem;
-        display: block;
-        margin-bottom: 1rem;
-    }
-    /* Personalizza il pulsante Browse files */
-    div.stFileUploader button {
-        background-color: #1e3799 !important;
-        color: white !important;
-        border-radius: 5px !important;
-        padding: 0.5rem 1rem !important;
-    }
-    div.stFileUploader:hover {
-        background-color: #e9ecef !important;
-    }
+    
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -375,7 +346,7 @@ st.markdown(
             Estrazione Nominativi da Visura Camerale TELEMACO
         </h1>
         <h3 style="color: #576574; font-weight: normal;">
-            per verifiche presso il Casellario
+            (per verifiche presso il Casellario)
         </h3>
     </div>
     """,
@@ -384,7 +355,7 @@ st.markdown(
 
 # Area di upload con testo personalizzato
 uploaded_file = st.file_uploader(
-    "",
+    label="Carica un file PDF di una visura camerale Telemaco",
     type=["pdf"],
     key="pdf_uploader"
 )
