@@ -362,7 +362,7 @@ uploaded_file = st.file_uploader(
     label="📤 Carica un file PDF di una visura camerale Telemaco",
     type=["pdf"],
     label_visibility="hidden",  # Nasconde la label predefinita
-    key="pdf_uploader"
+    key="pdf_uploader_1"
 )
 # Testo aggiuntivo personalizzato
 if not uploaded_file:
