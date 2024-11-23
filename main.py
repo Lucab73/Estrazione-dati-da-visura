@@ -13,9 +13,8 @@ st.set_page_config(
 
 # Custom CSS per migliorare l'aspetto
 
-st.markdown("""
+st.markdown ("""
     <style>
-    
     /* Personalizzazione area upload */
     .uploadfile {
         border: 2px dashed #1e3799 !important;
@@ -39,6 +38,8 @@ st.markdown("""
     .css-1vq4p4l {
         padding: 1rem !important;
     }
+
+    /* Stile generale app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -64,31 +65,8 @@ st.markdown("""
         background-color: #0c2461;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-     /* Personalizzazione area upload */
-    .uploadfile {
-        border: 2px dashed #1e3799 !important;
-        border-radius: 10px !important;
-        padding: 2rem !important;
-        background-color: #f8f9fa !important;
-    }
-    .uploadfile:hover {
-        background-color: #e9ecef !important;
-        border-color: #0c2461 !important;
-    }
-    /* Nascondi il testo predefinito in inglese */
-    .uploadfile > div > div > p {
-        display: none !important;
-    }
-    /* Personalizza il pulsante Browse files */
-    .uploadfile > div > div > button {
-        background-color: #1e3799 !important;
-        color: white !important;
-    }
-    .css-1vq4p4l {
-        padding: 1rem !important;
-    }
     </style>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
