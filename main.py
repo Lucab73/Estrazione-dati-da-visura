@@ -314,24 +314,45 @@ def estrai_dati(filepath):
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
 # Contenitore principale con stile migliorato
-st.markdown("""
-    <div style="background: #f8f9fa; 
-                padding: 1.5rem; 
-                border-radius: 10px; 
-                border: 2px dashed #1e3799;
-                margin-bottom: 1rem;
-                text-align: center;">
-        <h4 style="color: #1e3799; margin-bottom: 1rem;">
-            📤 Carica un file PDF di una visura camerale Telemaco
-        </h4>
-        <p style="color: #576574; margin-bottom: 0;">
-            Trascina qui il file o utilizza il pulsante di selezione per estrarre i nominativi e scaricare i dati in formato Excel
-        </p>
-    </div>
+st.markdown ("""
+    <style>
+    /* Stile per l'area di upload */
+    .uploadedFile {
+        border: 2px dashed #1e3799;
+        border-radius: 10px;
+        padding: 1.5rem;
+        background: #f8f9fa;
+        margin-bottom: 1rem;
+    }
+
+    /* Stile per il testo dell'uploader */
+    .stFileUploader > div {
+        padding: 1rem;
+    }
+
+    /* Modifica il testo "Drag and drop file here" */
+    .stFileUploader > div:first-child::before {
+        content: "📤 Carica un file PDF di una visura camerale Telemaco";
+        display: block;
+        color: #1e3799;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modifica il testo "or" */
+    .stFileUploader > div:first-child::after {
+        content: "Trascina qui il file o utilizza il pulsante di selezione per estrarre i nominativi e scaricare i dati in formato Excel";
+        display: block;
+        color: #576574;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    </style>
     """, unsafe_allow_html=True)
 
 # Caricamento del file PDF
-uploaded_file = st.file_uploader ("Seleziona un file PDF", type=["pdf"])
+uploaded_file = st.file_uploader("", type=["pdf"])
 
 if uploaded_file is not None:
         # Salva il file caricato
