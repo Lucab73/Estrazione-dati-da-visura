@@ -363,14 +363,17 @@ uploaded_file = st.file_uploader(
     type=["pdf"],  # Limita i tipi di file accettati
     key="pdf_uploader"
 )
-
+# Testo introduttivo (solo visibile se un file è caricato correttamente)
 if uploaded_file is not None:
-        # Testo introduttivo (solo visibile se un file è caricato correttamente)
-        st.markdown ("""
-           <div style="text-align: center; margin-top: -1rem; margin-bottom: 1rem;">
-               <h4 style="color: #1e3799;">✅ File caricato con successo!</h4>
-           </div>
-           """, unsafe_allow_html=True)
+    # Testo introduttivo (solo visibile se un file è caricato correttamente)
+    st.markdown ("""
+            <div style="text-align: center; margin-top: -1rem; margin-bottom: 1rem;">
+                <h4 style="color: #1e3799;">✅ File caricato con successo!</h4>
+            </div>
+            """, unsafe_allow_html=True)
+    
+if uploaded_file is not None:
+
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
