@@ -12,8 +12,20 @@ st.set_page_config(
 )
 
 # Custom CSS per migliorare l'aspetto
+
 st.markdown("""
     <style>
+    /* Nascondi il testo predefinito in inglese */
+    .uploadfile > div > div > p {
+    display: none !important;
+    }
+
+    /* Personalizza il testo all'interno dell'area di upload */
+    .uploadfile > div > div {
+    text-align: center;
+    font-size: 16px;
+    color: #576574;
+    }
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
