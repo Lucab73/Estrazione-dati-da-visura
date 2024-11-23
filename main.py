@@ -85,6 +85,8 @@ def estrai_dati(filepath):
 
     for i, riga in enumerate (righe):
         if "Indirizzo Sede" in riga:
+            # Aggiungiamo uno spazio dopo "Sede" per separare "Sede" da "BOLOGNA" o altre parole
+            riga = riga.replace ("Sede", "Sede ")
             # Trova il Comune e la Via
             parti = riga.split ()
             comune_parole = []
