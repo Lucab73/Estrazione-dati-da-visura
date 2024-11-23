@@ -4,6 +4,44 @@ import openpyxl
 from PyPDF2 import PdfReader
 import re
 
+# Configurazione iniziale della pagina con tema personalizzato
+st.set_page_config(
+    page_title="Estrazione Nominativi",
+    page_icon="📜",
+    layout="centered"
+)
+
+# Custom CSS per migliorare l'aspetto
+st.markdown("""
+    <style>
+    .stApp {
+        background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
+    }
+    .main {
+        padding: 2rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #1e3799;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .stButton>button {
+        background-color: #1e3799;
+        color: white;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #0c2461;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
     # Caricamento del PDF
@@ -13,6 +51,17 @@ def estrai_dati(filepath):
         text += page.extract_text ()
 
     righe = text.splitlines ()
+
+    # Estrarre il numero degli addetti
+    numero_addetti = "Non trovato"
+    for i, riga in enumerate (righe):
+        if "Addetti" in riga:
+            # Cerca un numero che viene dopo una data (se presente) o dopo la parola Addetti
+            match = re.search (r'Addetti.*?(?:\d{2}/\d{2}/\d{4})?\s*(\d+)\s*$', riga)
+            if match:
+                numero_addetti = match.group (1)
+                print (f"Riga trovata: {riga}")  # Debug: stampa la riga per verifica
+                break
 
     # Estrarre la ragione sociale
     ragione_sociale = ""
@@ -259,85 +308,119 @@ def estrai_dati(filepath):
     for sezione, testo in testo_sezioni.items ():
         elabora_sezione (testo, sezione)
 
-    return dati, ragione_sociale, comune, via
+    return dati, ragione_sociale, comune, via, numero_addetti
 
 # Interfaccia Streamlit
-st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
+#st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
-# Header con titolo personalizzato
-st.markdown(
+# Header con titolo personalizzato e animazione
+st.markdown (
     """
-    <h1 style="color:darkblue; text-align:center;">Estrazione Nominativi da Visura Camerale TELEMACO</h1>
-    <h3 style="color:gray; text-align:center;">per verifiche presso il Casellario</h3>
+    <div style="text-align: center; padding: 2rem 0;">
+        <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
+            Estrazione Nominativi da Visura Camerale TELEMACO
+        </h1>
+        <h3 style="color: #576574; font-weight: normal;">
+            per verifiche presso il Casellario
+        </h3>
+    </div>
     """,
     unsafe_allow_html=True,
 )
 
-# Sezione di caricamento file
-st.write("**Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi e scaricare i dati in formato Excel.**")
+# Contenitore principale con bordo e ombreggiatura
+with st.container ():
+    st.markdown ("""
+        <div style="padding: 1.5rem; border-radius: 10px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        </div>
+        """, unsafe_allow_html=True)
 
-# Caricamento del file PDF
-uploaded_file = st.file_uploader("Seleziona un file PDF", type=["pdf"])
+    st.write (
+        "**📤 Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi e scaricare i dati in formato Excel.**")
 
-if uploaded_file is not None:
-    # Salva il file caricato
-    with open("uploaded_file.pdf", "wb") as f:
-        f.write(uploaded_file.read())
+    # Caricamento del file PDF
+    uploaded_file = st.file_uploader ("Seleziona un file PDF", type=["pdf"])
 
-    # Estrai i dati
-    st.info("Elaborazione in corso, attendere qualche secondo...")
-    dati, ragione_sociale, comune, via = estrai_dati("uploaded_file.pdf")
+    if uploaded_file is not None:
+        # Salva il file caricato
+        with open ("uploaded_file.pdf", "wb") as f:
+            f.write (uploaded_file.read ())
 
-    # Mostra i dati estratti
-    if dati:
-        df = pd.DataFrame(dati)
-        st.success("Dati estratti con successo! Visualizza o scarica il file Excel.")
-        st.dataframe(df)
+        # Mostra un loader durante l'elaborazione
+        with st.spinner ('Elaborazione in corso...'):
+            dati, ragione_sociale, comune, via, numero_addetti = estrai_dati ("uploaded_file.pdf")
 
-        # Mostra la ragione sociale, il comune e la via
-        st.subheader ("Dati Societari:")
-        st.write (f"**Ragione Sociale:** {ragione_sociale}")
-        st.write (f"**Sede legale:** {comune}")
-        st.write (f"**Indirizzo:** {via}")
+        # Mostra i dati estratti
+        if dati:
+            df = pd.DataFrame (dati)
+            st.success ("✅ Dati estratti con successo!")
 
-        # Consenti il download del file Excel
-        output_path = "Elenco per casellario.xlsx"
+            # Card per i dati societari
+            st.markdown ("""
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
+                    <h3 style="color: #1e3799; margin-bottom: 1rem;">📊 Dati Societari</h3>
+                </div>
+                """, unsafe_allow_html=True)
 
-        # Esporta il DataFrame in Excel usando pandas
-        df.to_excel (output_path, index=False, engine='openpyxl')
+            col1, col2 = st.columns (2)
+            with col1:
+                st.markdown (f"**🏢 Ragione Sociale:**\n{ragione_sociale}")
+                st.markdown (f"**📍 Sede legale:**\n{comune}")
+            with col2:
+                st.markdown (f"**🏠 Indirizzo:**\n{via}")
+                st.markdown (f"**👥 Numero Addetti:**\n{numero_addetti}")
 
-        # Adatta le colonne al contenuto
-        wb = openpyxl.load_workbook (output_path)
-        ws = wb.active
-
-        for col in ws.columns:
-            max_length = 0
-            column = col[0].column_letter  # Ottieni la lettera della colonna
-            for cell in col:
-                try:  # Calcola la lunghezza massima del contenuto
-                    if cell.value:
-                        max_length = max (max_length, len (str (cell.value)))
-                except:
-                    pass
-            adjusted_width = max_length + 2  # Aggiungi un margine
-            ws.column_dimensions[column].width = adjusted_width
-
-        # Salva il file con le colonne adattate
-        wb.save (output_path)
-
-        with open(output_path, "rb") as f:
-            st.download_button(
-                label="📥 Scarica il file Excel",
-                data=f,
-                file_name="Elenco per casellario.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            # Visualizzazione della tabella con stile
+            st.markdown ("### 📋 Elenco Nominativi")
+            st.dataframe (
+                df,
+                use_container_width=True,
+                hide_index=True
             )
-    else:
-        st.warning("⚠️ Nessun dato trovato nel file PDF.")
 
-# Barra laterale (opzionale)
+            # Preparazione e download del file Excel
+            output_path = "Elenco per casellario.xlsx"
+            df.to_excel (output_path, index=False, engine='openpyxl')
+
+            # Formattazione Excel
+            wb = openpyxl.load_workbook (output_path)
+            ws = wb.active
+            for col in ws.columns:
+                max_length = 0
+                column = col[0].column_letter
+                for cell in col:
+                    try:
+                        if cell.value:
+                            max_length = max (max_length, len (str (cell.value)))
+                    except:
+                        pass
+                adjusted_width = max_length + 2
+                ws.column_dimensions[column].width = adjusted_width
+            wb.save (output_path)
+
+            # Pulsante di download stilizzato
+            with open (output_path, "rb") as f:
+                st.download_button (
+                    label="📥 Scarica il file Excel",
+                    data=f,
+                    file_name="Elenco per casellario.xlsx",
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                )
+        else:
+            st.error ("❌ Nessun dato trovato nel file PDF.")
+
+# Barra laterale migliorata
 with st.sidebar:
-    st.markdown("### Informazioni sull'app:")
-    st.write("Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli presso il Casellario Giudiziale.")
-    st.write("Versione: 1.0")
-    st.write("Sviluppata da Luca Bruzzi")
+    st.markdown ("""
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+            <h3 style="color: #1e3799;">ℹ️ Informazioni sull'app</h3>
+        </div>
+        """, unsafe_allow_html=True)
+    st.write ("""
+        Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF 
+        delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli 
+        presso il Casellario Giudiziale.
+    """)
+    st.divider ()
+    st.markdown ("**🔄 Versione:** 1.1")
+    st.markdown ("**👨‍💻 Sviluppato da:** Luca Bruzzi")
