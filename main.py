@@ -63,9 +63,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Your Streamlit app code
-st.title("Upload Your File")
-st.file_uploader("Choose a file")
 
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
