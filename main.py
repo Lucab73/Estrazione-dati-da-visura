@@ -15,31 +15,36 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Personalizzazione area upload */
+    /* Personalizzazione area upload prima e durante l'upload */
     .stFileUploader > div {
-        border: 2px dashed #1e3799 !important;
+        border: 2px dashed #1e3799 !important;  /* Colore blu per il bordo tratteggiato */
         border-radius: 10px !important;
         padding: 2rem !important;
         background-color: #f8f9fa !important;
     }
     .stFileUploader > div:hover {
         background-color: #e9ecef !important;
-        border-color: #0c2461 !important;
+        border-color: #0c2461 !important;  /* Colore blu più scuro al passaggio del mouse */
     }
-    /* Nascondi il testo predefinito in inglese */
     .stFileUploader > div > div > p {
-        display: none !important;
+        display: none !important;  /* Nasconde il testo predefinito */
     }
-    /* Personalizza il pulsante Browse files */
     .stFileUploader > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
+
+    /* Personalizzazione finestra di caricamento file */
+    .stFileUploader > div > div > div {
+        background-color: #e9ecef !important; /* Cambia il colore di sfondo quando il file è caricato */
+        border: 2px solid #1e3799 !important;  /* Applica il bordo blu al caricamento del file */
+    }
+
+    /* Resto della personalizzazione */
     .css-1vq4p4l {
         padding: 1rem !important;
     }
 
-    /* Stile generale app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
