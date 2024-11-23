@@ -15,6 +15,31 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+    /* Nascondi il testo predefinito */
+    .uploadfile > div > div > p {
+        display: none !important;
+    }
+    /* Personalizza il pulsante Browse files */
+    .uploadfile > div > div > button {
+        background-color: #1e3799 !important;
+        color: white !important;
+        border-radius: 5px !important;
+        padding: 0.5rem 1rem !important;
+    }
+    /* Aggiungi un messaggio personalizzato sopra il pulsante */
+    .uploadfile > div {
+        position: relative;
+    }
+    .uploadfile > div:before {
+        content: "📤 Carica un file PDF di una visura camerale Telemaco. Trascina qui il file o utilizza il pulsante di selezione";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #576574;
+        font-size: 1rem;
+        text-align: center;
+    }
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -354,7 +379,7 @@ st.markdown(
 
 # Area di upload con testo personalizzato
 uploaded_file = st.file_uploader(
-    label="📤 Carica un file PDF di una visura camerale Telemaco\nTrascina qui il file o utilizza il pulsante di selezione",
+    "",
     type=["pdf"],
     key="pdf_uploader"
 )
