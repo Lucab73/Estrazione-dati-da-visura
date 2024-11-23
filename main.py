@@ -16,6 +16,29 @@ st.set_page_config(
 st.markdown("""
     <style>
     
+    /* Personalizzazione area upload */
+    .uploadfile {
+        border: 2px dashed #1e3799 !important;
+        border-radius: 10px !important;
+        padding: 2rem !important;
+        background-color: #f8f9fa !important;
+    }
+    .uploadfile:hover {
+        background-color: #e9ecef !important;
+        border-color: #0c2461 !important;
+    }
+    /* Nascondi il testo predefinito in inglese */
+    .uploadfile > div > div > p {
+        display: none !important;
+    }
+    /* Personalizza il pulsante Browse files */
+    .uploadfile > div > div > button {
+        background-color: #1e3799 !important;
+        color: white !important;
+    }
+    .css-1vq4p4l {
+        padding: 1rem !important;
+    }
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
