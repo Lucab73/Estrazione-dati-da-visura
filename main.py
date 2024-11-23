@@ -15,60 +15,28 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Personalizzazione area upload prima e durante l'upload */
+    /* Personalizzazione area upload */
     .stFileUploader > div {
-        border: 2px dashed #1e3799 !important;  /* Colore blu per il bordo tratteggiato */
+        border: 2px dashed #1e3799 !important;  /* Bordo tratteggiato blu */
         border-radius: 10px !important;
         padding: 2rem !important;
         background-color: #f8f9fa !important;
     }
     .stFileUploader > div:hover {
         background-color: #e9ecef !important;
-        border-color: #0c2461 !important;  /* Colore blu più scuro al passaggio del mouse */
+        border-color: #0c2461 !important;
     }
+    /* Nascondi il testo predefinito in inglese */
     .stFileUploader > div > div > p {
-        display: none !important;  /* Nasconde il testo predefinito */
+        display: none !important;
     }
+    /* Personalizza il pulsante Browse files */
     .stFileUploader > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
-
-    /* Personalizzazione finestra di caricamento file */
-    .stFileUploader > div > div > div {
-        background-color: #e9ecef !important; /* Cambia il colore di sfondo quando il file è caricato */
-        border: 2px solid #1e3799 !important;  /* Applica il bordo blu al caricamento del file */
-    }
-
-    /* Resto della personalizzazione */
     .css-1vq4p4l {
         padding: 1rem !important;
-    }
-
-    .stApp {
-        background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
-    }
-    .main {
-        padding: 2rem;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-        color: #1e3799;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    .stButton>button {
-        background-color: #1e3799;
-        color: white;
-        border-radius: 5px;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #0c2461;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     </style>
 """, unsafe_allow_html=True)
