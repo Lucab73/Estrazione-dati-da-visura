@@ -39,22 +39,28 @@ st.markdown("""
         background-color: #0c2461;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-     /* Stile personalizzato per l'area di upload */
-    .stFileUploader {
-        padding: 2rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        border: 2px dashed #1e3799;
-        margin: 1rem 0;
+     /* Personalizzazione area upload */
+    .uploadfile {
+        border: 2px dashed #1e3799 !important;
+        border-radius: 10px !important;
+        padding: 2rem !important;
+        background-color: #f8f9fa !important;
     }
-    .stFileUploader > div {
-        padding: 1rem;
-        text-align: center;
+    .uploadfile:hover {
+        background-color: #e9ecef !important;
+        border-color: #0c2461 !important;
     }
-    .upload-text {
-        color: #1e3799;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
+    /* Nascondi il testo predefinito in inglese */
+    .uploadfile > div > div > p {
+        display: none !important;
+    }
+    /* Personalizza il pulsante Browse files */
+    .uploadfile > div > div > button {
+        background-color: #1e3799 !important;
+        color: white !important;
+    }
+    .css-1vq4p4l {
+        padding: 1rem !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -345,15 +351,24 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Area di upload semplificata
-uploaded_file = st.file_uploader(
-    "📤 Trascina qui il file PDF della visura camerale o utilizza il pulsante per selezionarlo",
-    type=["pdf"],
-    help="Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi"
-)
+# Istruzioni per l'upload
+st.markdown("""
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <h4 style="color: #1e3799;">
+            📤 Carica un file PDF di una visura camerale Telemaco
+        </h4>
+        <p style="color: #576574;">
+            Trascina qui il file o utilizza il pulsante di selezione
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Caricamento del file PDF
-uploaded_file = st.file_uploader("", type=["pdf"])
+# Area di upload singola
+uploaded_file = st.file_uploader(
+    "",  # Label vuota perché usiamo il testo HTML sopra
+    type=["pdf"],
+    key="pdf_uploader"
+)
 
 if uploaded_file is not None:
         # Salva il file caricato
