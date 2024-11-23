@@ -393,7 +393,7 @@ if uploaded_file is not None:
             col1, col2 = st.columns (2)
             with col1:
                 st.markdown (f"**🏢 Ragione Sociale:**\n{ragione_sociale}")
-                st.markdown (f"**⚖️ Forma giuridica:**\n{forma_giuridica}")
+                st.markdown (f"**⚖️ Forma giuridica:**\n{forma_giuridica.upper()}")
                 st.markdown (f"**📍 Sede legale:**\n{comune}")
             with col2:
                 st.markdown (f"**🏠 Indirizzo:**\n{via}")
