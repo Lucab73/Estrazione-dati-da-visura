@@ -14,32 +14,20 @@ st.set_page_config(
 # Custom CSS per migliorare l'aspetto
 st.markdown("""
     <style>
+    /* Stile dell'intera app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
+
+    /* Stile della sezione principale */
     .main {
         padding: 2rem;
         border-radius: 10px;
         background: rgba(255, 255, 255, 0.95);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    h1 {
-        color: #1e3799;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        font-family: 'Helvetica Neue', sans-serif;
-    }
-    .stButton>button {
-        background-color: #1e3799;
-        color: white;
-        border-radius: 5px;
-        padding: 0.5rem 1rem;
-        transition: all 0.3s ease;
-    }
-    .stButton>button:hover {
-        background-color: #0c2461;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-     /* Personalizzazione area upload */
+
+    /* Stile per l'area di upload */
     .uploadfile {
         border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
@@ -50,17 +38,23 @@ st.markdown("""
         background-color: #e9ecef !important;
         border-color: #0c2461 !important;
     }
-    /* Nascondi il testo predefinito in inglese */
+
+    /* Personalizza il testo predefinito */
     .uploadfile > div > div > p {
-        display: none !important;
+        display: none !important; /* Nascondi il testo predefinito */
     }
-    /* Personalizza il pulsante Browse files */
     .uploadfile > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
-    .css-1vq4p4l {
-        padding: 1rem !important;
+
+    /* Testo personalizzato */
+    .uploadfile h4 {
+        color: #1e3799;
+        margin-bottom: 0.5rem;
+    }
+    .uploadfile p {
+        color: #576574;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -365,12 +359,18 @@ st.markdown("""
 
 # Area di upload singola
 uploaded_file = st.file_uploader(
-    "",  # Label vuota perché usiamo il testo HTML sopra
-    type=["pdf"],
+    label="",  # Etichetta vuota perché usiamo il testo HTML personalizzato
+    type=["pdf"],  # Limita i tipi di file accettati
     key="pdf_uploader"
 )
 
 if uploaded_file is not None:
+        # Testo introduttivo (solo visibile se un file è caricato correttamente)
+        st.markdown ("""
+           <div style="text-align: center; margin-top: -1rem; margin-bottom: 1rem;">
+               <h4 style="color: #1e3799;">✅ File caricato con successo!</h4>
+           </div>
+           """, unsafe_allow_html=True)
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
