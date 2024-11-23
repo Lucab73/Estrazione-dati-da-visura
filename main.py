@@ -14,20 +14,32 @@ st.set_page_config(
 # Custom CSS per migliorare l'aspetto
 st.markdown("""
     <style>
-    /* Stile dell'intera app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
-
-    /* Stile della sezione principale */
     .main {
         padding: 2rem;
         border-radius: 10px;
         background: rgba(255, 255, 255, 0.95);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
-    /* Stile per l'area di upload */
+    h1 {
+        color: #1e3799;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .stButton>button {
+        background-color: #1e3799;
+        color: white;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #0c2461;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+     /* Personalizzazione area upload */
     .uploadfile {
         border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
@@ -38,23 +50,17 @@ st.markdown("""
         background-color: #e9ecef !important;
         border-color: #0c2461 !important;
     }
-
-    /* Personalizza il testo predefinito */
+    /* Nascondi il testo predefinito in inglese */
     .uploadfile > div > div > p {
-        display: none !important; /* Nascondi il testo predefinito */
+        display: none !important;
     }
+    /* Personalizza il pulsante Browse files */
     .uploadfile > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
-
-    /* Testo personalizzato */
-    .uploadfile h4 {
-        color: #1e3799;
-        margin-bottom: 0.5rem;
-    }
-    .uploadfile p {
-        color: #576574;
+    .css-1vq4p4l {
+        padding: 1rem !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -357,23 +363,14 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-# Area di upload personalizzata
+# Area di upload singola
 uploaded_file = st.file_uploader(
-    label="📤 Carica un file PDF di una visura camerale Telemaco",
+    "",  # Label vuota perché usiamo il testo HTML sopra
     type=["pdf"],
-    label_visibility="hidden",  # Nasconde la label predefinita
-    key="pdf_uploader_1"
+    key="pdf_uploader"
 )
-# Testo aggiuntivo personalizzato
-if not uploaded_file:
-    st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem; color: #576574;">
-            Trascina qui il file o utilizza il pulsante di selezione
-        </div>
-    """, unsafe_allow_html=True)
 
 if uploaded_file is not None:
-
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
