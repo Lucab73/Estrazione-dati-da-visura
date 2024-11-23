@@ -11,50 +11,24 @@ st.set_page_config(
     layout="centered"
 )
 
-# Custom CSS per migliorare l'aspetto
+# CSS ottimizzato per l'estetica di base
 st.markdown("""
     <style>
-    /* Stile dell'intera app */
+    /* Stile di sfondo dell'app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
 
-    /* Stile della sezione principale */
-    .main {
-        padding: 2rem;
-        border-radius: 10px;
-        background: rgba(255, 255, 255, 0.95);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Stile per l'area di upload */
-    .uploadfile {
-        border: 2px dashed #1e3799 !important;
-        border-radius: 10px !important;
-        padding: 2rem !important;
-        background-color: #f8f9fa !important;
-    }
-    .uploadfile:hover {
-        background-color: #e9ecef !important;
-        border-color: #0c2461 !important;
-    }
-
-    /* Personalizza il testo predefinito */
-    .uploadfile > div > div > p {
-        display: none !important; /* Nascondi il testo predefinito */
-    }
-    .uploadfile > div > div > button {
+    /* Stile dei pulsanti */
+    button {
         background-color: #1e3799 !important;
         color: white !important;
     }
 
-    /* Testo personalizzato */
-    .uploadfile h4 {
-        color: #1e3799;
-        margin-bottom: 0.5rem;
-    }
-    .uploadfile p {
-        color: #576574;
+    /* Personalizzazione dei bordi */
+    .uploadfile {
+        border: 2px dashed #1e3799;
+        border-radius: 10px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -331,46 +305,29 @@ def estrai_dati(filepath):
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
 # Contenitore principale con stile migliorato
-st.markdown(
-    """
-    <div style="text-align: center; padding: 2rem 0;">
-        <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
-            Estrazione Nominativi da Visura Camerale TELEMACO
-        </h1>
-        <h3 style="color: #576574; font-weight: normal;">
-            (per verifiche presso il Casellario)
-        </h3>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-# Istruzioni per l'upload
 st.markdown("""
-    <div style="text-align: center; margin-bottom: 1rem;">
-        <h4 style="color: #1e3799;">
-            📤 Carica un file PDF di una visura camerale Telemaco
-        </h4>
-        <p style="color: #576574;">
-            Trascina qui il file o utilizza il pulsante di selezione
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+<div style="text-align: center; padding: 2rem 0;">
+    <h1 style="color: #1e3799;">Estrazione Nominativi da Visura Camerale TELEMACO</h1>
+    <h3 style="color: #576574;">(per verifiche presso il Casellario)</h3>
+    <h4 style="color: #1e3799; margin-top: 1rem;">📤 Carica un file PDF di una visura camerale Telemaco</h4>
+    <p style="color: #576574;">Trascina qui il file o utilizza il pulsante di selezione</p>
+</div>
+""", unsafe_allow_html=True)
 
-# Area di upload personalizzata
-uploaded_file = st.file_uploader(
-    label="📤 Carica un file PDF di una visura camerale Telemaco",
-    type=["pdf"],
-    label_visibility="hidden",  # Nasconde la label predefinita
-    key="pdf_uploader"
-)
+# Caricamento file
+uploaded_file = st.file_uploader("Carica un PDF", type=["pdf"], label_visibility="hidden", key="pdf_uploader")
+
 
 if uploaded_file is not None:
-        st.markdown ("""
-                <div style="text-align: center; margin-bottom: 1rem; color: #576574;">
-                    Trascina qui il file o utilizza il pulsante di selezione
-                </div>
-            """, unsafe_allow_html=True)
+        try:
+           # Prova a leggere il file come PDF
+          reader = PyPDF2.PdfReader (uploaded_file)
+          if not reader.pages:
+             raise ValueError ("Il file PDF è vuoto.")
+        except Exception as e:
+          st.error (f"❌ Errore nel caricamento del file: {e}")
+          st.stop ()
+
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
