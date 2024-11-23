@@ -53,7 +53,7 @@ def estrai_dati(filepath):
     righe = text.splitlines ()
 
     # Ricerca della "Forma giuridica"
-    forma_giuridica = ""
+    forma_giuridica = "<non trovato>"
     for i, riga in enumerate (righe):
         if "Forma giuridica" in riga:
             # Trova tutte le parole successive alla "Forma giuridica"
@@ -83,35 +83,29 @@ def estrai_dati(filepath):
             break
 
     # Estrarre il numero degli addetti
-    numero_addetti = "Non trovato"
+    numero_addetti = "<non trovato>"
     for i, riga in enumerate (righe):
         if "Addetti" in riga:
             # Cerca un numero che viene dopo una data (se presente) o dopo la parola Addetti
             match = re.search (r'Addetti.*?(?:\d{2}/\d{2}/\d{4})?\s*(\d+)\s*$', riga)
             if match:
                 numero_addetti = match.group (1)
-                print (f"Riga trovata: {riga}")  # Debug: stampa la riga per verifica
                 break
 
     # Estrarre la ragione sociale
-    ragione_sociale = ""
+    ragione_sociale = "<non trovato>"  # Impostiamo il valore di default
     for i, riga in enumerate (righe):
-        if "VISURA" in riga:
+        if "VISURA" in riga or "FASCICOLO" in riga:
             # Ragione sociale inizia due righe dopo "VISURA"
             inizio = i + 2
             fine = inizio + 3  # Include 3 righe dopo
             ragione_sociale = " ".join (righe[inizio:fine]).strip ()
             break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
 
-    # Se non troviamo "VISURA", avvisiamo
-    if not ragione_sociale:
-        print ("Non è stato possibile trovare la ragione sociale.")
-    else:
-        print (f"Ragione Sociale estratta: {ragione_sociale}")
 
     # Estrarre l'indirizzo (Comune e Via)
-    comune = ""
-    via = ""
+    comune = "<non trovato>"
+    via = "<non trovato>"
 
     for i, riga in enumerate (righe):
         if "Indirizzo Sede" in riga:
@@ -157,15 +151,6 @@ def estrai_dati(filepath):
                 via = via.split ("CAP")[0].strip ()
 
             break  # Esci dal ciclo dopo aver trovato la prima occorrenza
-
-    # Se non troviamo "Indirizzo Sede", avvisiamo
-    if not comune or not via:
-        print ("Non è stato possibile trovare il Comune o la Via.")
-    else:
-        print (f"Comune estratto: {comune}")
-        print (f"Via estratta: {via}")
-    # Debug: Stampa le prime 500 righe del testo
-    print("\n".join(text.splitlines()[:500]))  # Stampa le prime 500 righe del testo
 
     # Lista delle sezioni che determinano la fine della ricerca
     sezioni_fine = [
