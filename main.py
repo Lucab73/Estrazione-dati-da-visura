@@ -39,6 +39,23 @@ st.markdown("""
         background-color: #0c2461;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
+     /* Stile personalizzato per l'area di upload */
+    .stFileUploader {
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 2px dashed #1e3799;
+        margin: 1rem 0;
+    }
+    .stFileUploader > div {
+        padding: 1rem;
+        text-align: center;
+    }
+    .upload-text {
+        color: #1e3799;
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -314,7 +331,7 @@ def estrai_dati(filepath):
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
 # Contenitore principale con stile migliorato
-st.markdown (
+st.markdown(
     """
     <div style="text-align: center; padding: 2rem 0;">
         <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
@@ -328,35 +345,12 @@ st.markdown (
     unsafe_allow_html=True
 )
 
-# Stile per l'area di upload
-st.markdown ("""
-    <style>
-    /* Stile generale per l'area di upload */
-    .stFileUploader {
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 10px;
-        border: 2px dashed #1e3799;
-    }
-
-    /* Stile per il testo dell'uploader */
-    .stFileUploader > div {
-        padding: 0.5rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Istruzioni per l'upload
-st.markdown ("""
-    <div style="margin-bottom: 1rem; text-align: center;">
-        <h4 style="color: #1e3799;">
-            📤 Carica un file PDF di una visura camerale Telemaco
-        </h4>
-        <p style="color: #576574;">
-            Trascina qui il file o utilizza il pulsante di selezione per estrarre i nominativi e scaricare i dati in formato Excel
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
+# Area di upload semplificata
+uploaded_file = st.file_uploader(
+    "📤 Trascina qui il file PDF della visura camerale o utilizza il pulsante per selezionarlo",
+    type=["pdf"],
+    help="Carica un file PDF di una visura camerale Telemaco per estrarre i nominativi"
+)
 
 # Caricamento del file PDF
 uploaded_file = st.file_uploader("", type=["pdf"])
