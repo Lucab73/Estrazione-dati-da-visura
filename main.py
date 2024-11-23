@@ -52,6 +52,36 @@ def estrai_dati(filepath):
 
     righe = text.splitlines ()
 
+    # Ricerca della "Forma giuridica"
+    forma_giuridica = ""
+    for i, riga in enumerate (righe):
+        if "Forma giuridica" in riga:
+            # Trova tutte le parole successive alla "Forma giuridica"
+            forma_giuridica_parole = []
+            parti = riga.split ()
+            trovato_forma = False
+
+            # Partiamo dalla parola successiva a "Forma giuridica"
+            for parola in parti[2:]:
+                if parola[0].isupper ():  # Se trovi una parola che inizia con maiuscola, interrompi
+                    trovato_forma = True
+                    break
+                forma_giuridica_parole.append (parola)
+
+            # Se non è completa, continua con la riga successiva
+            if not trovato_forma and i + 1 < len (righe):
+                riga_successiva = righe[i + 1]
+                parti_successiva = riga_successiva.split ()
+                for parola in parti_successiva:
+                    if parola[0].isupper ():  # Se trovi una parola che inizia con maiuscola, interrompi
+                        trovato_forma = True
+                        break
+                    forma_giuridica_parole.append (parola)
+
+            # Unisci le parole per ottenere la forma giuridica
+            forma_giuridica = " ".join (forma_giuridica_parole).strip ()
+            break
+
     # Estrarre il numero degli addetti
     numero_addetti = "Non trovato"
     for i, riga in enumerate (righe):
@@ -310,7 +340,7 @@ def estrai_dati(filepath):
     for sezione, testo in testo_sezioni.items ():
         elabora_sezione (testo, sezione)
 
-    return dati, ragione_sociale, comune, via, numero_addetti
+    return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
 
 # Interfaccia Streamlit
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
@@ -346,7 +376,7 @@ if uploaded_file is not None:
 
         # Mostra un loader durante l'elaborazione
         with st.spinner ('Elaborazione in corso...'):
-            dati, ragione_sociale, comune, via, numero_addetti = estrai_dati ("uploaded_file.pdf")
+            dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica = estrai_dati ("uploaded_file.pdf")
 
         # Mostra i dati estratti
         if dati:
@@ -363,6 +393,7 @@ if uploaded_file is not None:
             col1, col2 = st.columns (2)
             with col1:
                 st.markdown (f"**🏢 Ragione Sociale:**\n{ragione_sociale}")
+                st.markdown (f"**🏢 Ragione Sociale:**\n{forma_giuridica}")
                 st.markdown (f"**📍 Sede legale:**\n{comune}")
             with col2:
                 st.markdown (f"**🏠 Indirizzo:**\n{via}")
