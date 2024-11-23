@@ -15,26 +15,31 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Customize file uploader area */
-    .stFileUploader div {
+    /* Personalizzazione area upload */
+    .stFileUploader > div {
         border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
         padding: 2rem !important;
         background-color: #f8f9fa !important;
     }
-    .stFileUploader div:hover {
+    .stFileUploader > div:hover {
         background-color: #e9ecef !important;
         border-color: #0c2461 !important;
     }
-    .stFileUploader div p {
+    /* Nascondi il testo predefinito in inglese */
+    .stFileUploader > div > div > p {
         display: none !important;
     }
-    .stFileUploader div button {
+    /* Personalizza il pulsante Browse files */
+    .stFileUploader > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
+    .css-1vq4p4l {
+        padding: 1rem !important;
+    }
 
-    /* Style for the rest of the app */
+    /* Stile generale app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -62,7 +67,6 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
@@ -354,7 +358,9 @@ st.markdown(
 uploaded_file = st.file_uploader(
     label="Carica un file PDF di una visura camerale Telemaco",
     type=["pdf"],
-    key="pdf_uploader"
+    key="pdf_uploader",
+    help="Trascina o carica un file PDF da elaborare.",
+    label_visibility="collapsed"  # Riduce il testo che potrebbe interferire con lo stile
 )
 
 if uploaded_file is not None:
