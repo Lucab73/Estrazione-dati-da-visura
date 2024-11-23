@@ -13,7 +13,7 @@ st.set_page_config(
 
 # Custom CSS per migliorare l'aspetto
 
-st.markdown ("""
+st.markdown("""
     <style>
     /* Personalizzazione area upload */
     .uploadfile {
@@ -358,7 +358,9 @@ st.markdown(
 uploaded_file = st.file_uploader(
     label="Carica un file PDF di una visura camerale Telemaco",
     type=["pdf"],
-    key="pdf_uploader"
+    key="pdf_uploader",
+    help="Trascina o carica un file PDF da elaborare.",
+    label_visibility="collapsed"  # Riduce il testo che potrebbe interferire con lo stile
 )
 
 if uploaded_file is not None:
