@@ -15,31 +15,26 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Personalizzazione area upload */
-    .stFileUploader > div {
+    /* Customize file uploader area */
+    .stFileUploader div {
         border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
         padding: 2rem !important;
         background-color: #f8f9fa !important;
     }
-    .stFileUploader > div:hover {
+    .stFileUploader div:hover {
         background-color: #e9ecef !important;
         border-color: #0c2461 !important;
     }
-    /* Nascondi il testo predefinito in inglese */
-    .stFileUploader > div > div > p {
+    .stFileUploader div p {
         display: none !important;
     }
-    /* Personalizza il pulsante Browse files */
-    .stFileUploader > div > div > button {
+    .stFileUploader div button {
         background-color: #1e3799 !important;
         color: white !important;
     }
-    .css-1vq4p4l {
-        padding: 1rem !important;
-    }
 
-    /* Stile generale app */
+    /* Style for the rest of the app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -67,6 +62,10 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+# Your Streamlit app code
+st.title("Upload Your File")
+st.file_uploader("Choose a file")
 
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
