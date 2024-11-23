@@ -15,28 +15,29 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Personalizzazione area upload */
-    .stFileUploader > div {
-        border: 2px dashed #1e3799 !important;  /* Bordo tratteggiato blu */
+    /* Aggiungi bordo tratteggiato blu all'area di upload */
+    .css-1e4l1x8 {
+        border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
         padding: 2rem !important;
-        background-color: #f8f9fa !important;
     }
-    .stFileUploader > div:hover {
-        background-color: #e9ecef !important;
-        border-color: #0c2461 !important;
+    .css-1e4l1x8:hover {
+        border: 2px dashed #0c2461 !important;
     }
-    /* Nascondi il testo predefinito in inglese */
-    .stFileUploader > div > div > p {
-        display: none !important;
+    /* Rimuove il testo predefinito (Drag and drop) */
+    .css-1e4l1x8 .stFileUploader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
-    /* Personalizza il pulsante Browse files */
-    .stFileUploader > div > div > button {
+    .css-1e4l1x8 .stFileUploader p {
+        display: none;
+    }
+    /* Modifica del pulsante per migliorare l'aspetto */
+    .css-1e4l1x8 button {
         background-color: #1e3799 !important;
         color: white !important;
-    }
-    .css-1vq4p4l {
-        padding: 1rem !important;
+        border-radius: 5px !important;
     }
     </style>
 """, unsafe_allow_html=True)
