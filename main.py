@@ -15,17 +15,6 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* Nascondi il testo predefinito in inglese */
-    .uploadfile > div > div > p {
-    display: none !important;
-    }
-
-    /* Personalizza il testo all'interno dell'area di upload */
-    .uploadfile > div > div {
-    text-align: center;
-    font-size: 16px;
-    color: #576574;
-    }
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
@@ -363,21 +352,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Istruzioni per l'upload
-st.markdown("""
-    <div style="text-align: center; margin-bottom: 1rem;">
-        <h4 style="color: #1e3799;">
-            📤 Carica un file PDF di una visura camerale Telemaco
-        </h4>
-        <p style="color: #576574;">
-            Trascina qui il file o utilizza il pulsante di selezione
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-
-# Area di upload singola
+# Area di upload con testo personalizzato
 uploaded_file = st.file_uploader(
-    "",  # Label vuota perché usiamo il testo HTML sopra
+    label="📤 Carica un file PDF di una visura camerale Telemaco\nTrascina qui il file o utilizza il pulsante di selezione",
     type=["pdf"],
     key="pdf_uploader"
 )
