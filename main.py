@@ -365,12 +365,12 @@ uploaded_file = st.file_uploader(
     key="pdf_uploader"
 )
 
-if not uploaded_file:
-        st.markdown("""
-        <div style="text-align: center; margin-bottom: 1rem; color: #576574;">
-            Trascina qui il file o utilizza il pulsante di selezione
-        </div>
-        """, unsafe_allow_html=True)
+if uploaded_file is not None:
+        st.markdown ("""
+                <div style="text-align: center; margin-bottom: 1rem; color: #576574;">
+                    Trascina qui il file o utilizza il pulsante di selezione
+                </div>
+            """, unsafe_allow_html=True)
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
