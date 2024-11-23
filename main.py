@@ -359,18 +359,18 @@ st.markdown("""
 
 # Area di upload personalizzata
 uploaded_file = st.file_uploader(
-    label="",  # Etichetta vuota perché usiamo il testo HTML personalizzato
-    type=["pdf"],  # Limita i tipi di file accettati
+    label="📤 Carica un file PDF di una visura camerale Telemaco",
+    type=["pdf"],
+    label_visibility="hidden",  # Nasconde la label predefinita
     key="pdf_uploader"
 )
 
-if uploaded_file is not None:
-        # Testo introduttivo (solo visibile se un file è caricato correttamente)
-        st.markdown ("""
-            <div style="text-align: center; margin-top: -1rem; margin-bottom: 1rem;">
-                <h4 style="color: #1e3799;">✅ File caricato con successo!</h4>
-            </div>
-            """, unsafe_allow_html=True)
+if not uploaded_file:
+    st.markdown("""
+        <div style="text-align: center; margin-bottom: 1rem; color: #576574;">
+            Trascina qui il file o utilizza il pulsante di selezione
+        </div>
+    """, unsafe_allow_html=True)
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
