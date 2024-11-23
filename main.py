@@ -1,3 +1,7 @@
+Condividi
+
+
+Hai detto:
 import streamlit as st
 import pandas as pd
 import openpyxl
@@ -11,24 +15,56 @@ st.set_page_config(
     layout="centered"
 )
 
-# CSS ottimizzato per l'estetica di base
+# Custom CSS per migliorare l'aspetto
 st.markdown("""
     <style>
-    /* Stile di sfondo dell'app */
     .stApp {
         background: linear-gradient(to bottom right, #f5f7fa, #e3e6e8);
     }
-
-    /* Stile dei pulsanti */
-    button {
+    .main {
+        padding: 2rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #1e3799;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        font-family: 'Helvetica Neue', sans-serif;
+    }
+    .stButton>button {
+        background-color: #1e3799;
+        color: white;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+    }
+    .stButton>button:hover {
+        background-color: #0c2461;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+     /* Personalizzazione area upload */
+    .uploadfile {
+        border: 2px dashed #1e3799 !important;
+        border-radius: 10px !important;
+        padding: 2rem !important;
+        background-color: #f8f9fa !important;
+    }
+    .uploadfile:hover {
+        background-color: #e9ecef !important;
+        border-color: #0c2461 !important;
+    }
+    /* Nascondi il testo predefinito in inglese */
+    .uploadfile > div > div > p {
+        display: none !important;
+    }
+    /* Personalizza il pulsante Browse files */
+    .uploadfile > div > div > button {
         background-color: #1e3799 !important;
         color: white !important;
     }
-
-    /* Personalizzazione dei bordi */
-    .uploadfile {
-        border: 2px dashed #1e3799;
-        border-radius: 10px;
+    .css-1vq4p4l {
+        padding: 1rem !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -305,29 +341,40 @@ def estrai_dati(filepath):
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
 # Contenitore principale con stile migliorato
+st.markdown(
+    """
+    <div style="text-align: center; padding: 2rem 0;">
+        <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
+            Estrazione Nominativi da Visura Camerale TELEMACO
+        </h1>
+        <h3 style="color: #576574; font-weight: normal;">
+            per verifiche presso il Casellario
+        </h3>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Istruzioni per l'upload
 st.markdown("""
-<div style="text-align: center; padding: 2rem 0;">
-    <h1 style="color: #1e3799;">Estrazione Nominativi da Visura Camerale TELEMACO</h1>
-    <h3 style="color: #576574;">(per verifiche presso il Casellario)</h3>
-    <h4 style="color: #1e3799; margin-top: 1rem;">📤 Carica un file PDF di una visura camerale Telemaco</h4>
-    <p style="color: #576574;">Trascina qui il file o utilizza il pulsante di selezione</p>
-</div>
-""", unsafe_allow_html=True)
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <h4 style="color: #1e3799;">
+            📤 Carica un file PDF di una visura camerale Telemaco
+        </h4>
+        <p style="color: #576574;">
+            Trascina qui il file o utilizza il pulsante di selezione
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Caricamento file
-uploaded_file = st.file_uploader("Carica un PDF", type=["pdf"], label_visibility="hidden", key="pdf_uploader")
-
+# Area di upload singola
+uploaded_file = st.file_uploader(
+    "",  # Label vuota perché usiamo il testo HTML sopra
+    type=["pdf"],
+    key="pdf_uploader"
+)
 
 if uploaded_file is not None:
-        try:
-           # Prova a leggere il file come PDF
-          reader = PyPDF2.PdfReader (uploaded_file)
-          if not reader.pages:
-             raise ValueError ("Il file PDF è vuoto.")
-        except Exception as e:
-          st.error (f"❌ Errore nel caricamento del file: {e}")
-          st.stop ()
-
         # Salva il file caricato
         with open ("uploaded_file.pdf", "wb") as f:
             f.write (uploaded_file.read ())
