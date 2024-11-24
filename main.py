@@ -493,7 +493,7 @@ with st.sidebar:
 
     st.markdown ("""
         <div style="font-size: 20px;">
-            <strong>🔄 Versione:</strong> 1.2
+            <strong>🔄 Versione:</strong> 1.2 (Beta)
         </div>
     """, unsafe_allow_html=True)
     st.markdown ("""
