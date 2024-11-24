@@ -465,23 +465,35 @@ if uploaded_file is not None:
 
 # Barra laterale migliorata
 with st.sidebar:
+    # Stile CSS personalizzato
+    st.markdown ("""
+        <style>
+        .sidebar-text {
+            font-size: 16px !important;
+            line-height: 1.6 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
     st.markdown ("""
         <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px;">
             <h3 style="color: #1e3799;">ℹ️ Informazioni sull'app</h3>
         </div>
         """, unsafe_allow_html=True)
     st.divider ()
-    st.write ("""
+    st.markdown ("""
+    <div class="sidebar-text">
     Carica il PDF di una visura camerale di Telemaco e ottieni:
 
-    - **Dati societari principali** (ragione sociale, sede, forma giuridica, numero addetti).  
-    - **Elenco delle cariche aziendali** (nome, cognome, codice fiscale).  
+    - <b>Dati societari principali</b> (ragione sociale, sede, forma giuridica, numero addetti).<br>
+    - <b>Elenco delle cariche aziendali</b> (nome, cognome, codice fiscale).<br><br>
 
-    Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al **D.Lgs. 36/2023**.  
+    Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <b>D.Lgs. 36/2023</b>.<br><br>
 
     Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.
-    """)
+    </div>
+    """, unsafe_allow_html=True)
 
     st.divider ()
-    st.markdown ("**🔄 Versione:** 1.2")
-    st.markdown ("**👨‍💻 Sviluppato da:** Luca Bruzzi")
+    st.markdown ("<div class='sidebar-text'><b>🔄 Versione:</b> 1.2</div>", unsafe_allow_html=True)
+    st.markdown ("<div class='sidebar-text'><b>👨‍💻 Sviluppato da:</b> Luca Bruzzi</div>", unsafe_allow_html=True)
