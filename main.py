@@ -472,24 +472,27 @@ with st.sidebar:
         """, unsafe_allow_html=True)
     st.divider ()
     st.markdown ("""
-        <div style="font-size: 20px; line-height: 1.5;">
-            Carica il PDF di una visura camerale di Telemaco e ottieni:<br>
+        <div style="font-size: 20px;">
+            Carica il PDF di una visura camerale di Telemaco e ottieni:<br><br>
 
-            <ul style="list-style-type: disc; padding-left: 20px; margin: 10px 0;">
-                <li><strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti)</li>
-                <li><strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale)</li>
-            </ul>
+            • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti)<br><br>
 
-            <p>Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.</p>
+            • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale)<br><br>
 
-            <p>Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.</p>
+            Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.<br><br>
+
+            Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.
         </div>
     """, unsafe_allow_html=True)
 
     st.divider ()
     st.markdown ("""
-        <div style='font-size: 20px;'><strong>🔄 Versione:</strong> 1.2</div>
+        <div style="font-size: 20px;">
+            <strong>🔄 Versione:</strong> 1.2
+        </div>
     """, unsafe_allow_html=True)
     st.markdown ("""
-        <div style='font-size: 20px;'><strong>👨‍💻 Sviluppato da:</strong> Luca Bruzzi</div>
+        <div style="font-size: 20px;">
+            <strong>👨‍💻 Sviluppato da:</strong> Luca Bruzzi
+        </div>
     """, unsafe_allow_html=True)
