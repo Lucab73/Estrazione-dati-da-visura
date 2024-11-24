@@ -424,7 +424,7 @@ if uploaded_file is not None:
             </div>
             <div class="section-divider"></div>
         """, unsafe_allow_html=True)
-        
+
         # Visualizzazione della tabella con stile
         st.markdown ("### 📋 Elenco Nominativi")
         st.dataframe (
@@ -471,10 +471,16 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
     st.write ("""
-        Questa applicazione permette di estrarre i nominativi e i codici fiscali dai file PDF 
-        delle visure camerali di Telemaco, consentendo successivamente di effettuare i controlli 
-        presso il Casellario Giudiziale.
+    Carica il PDF di una visura camerale di Telemaco e ottieni:
+
+    - **Dati societari principali** (ragione sociale, sede, forma giuridica, numero addetti).  
+    - **Elenco delle cariche aziendali** (nome, cognome, codice fiscale).  
+
+    Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al **D.Lgs. 36/2023**.  
+
+    Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.
     """)
+
     st.divider ()
-    st.markdown ("**🔄 Versione:** 1.1")
+    st.markdown ("**🔄 Versione:** 1.2")
     st.markdown ("**👨‍💻 Sviluppato da:** Luca Bruzzi")
