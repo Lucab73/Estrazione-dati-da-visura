@@ -479,7 +479,7 @@ with st.sidebar:
 
         • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale).<br><br>
 
-        Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.<br><br>
+        Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.<br>
 
         Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.
         </div>
