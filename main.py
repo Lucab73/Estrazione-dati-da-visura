@@ -463,29 +463,34 @@ if uploaded_file is not None:
     else:
             st.error ("❌ Nessun dato trovato nel file PDF.")
 
-# Barra laterale migliorata
 with st.sidebar:
     st.markdown ("""
         <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px;">
             <h3 style="color: #1e3799;">ℹ️ Informazioni sull'app</h3>
         </div>
-        """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
     st.divider ()
+
     st.markdown ("""
-        <div style="font-size: 20px;">
+        <div style="font-size: 18px;">
             Carica il PDF di una visura camerale di Telemaco e ottieni:<br><br>
-
-            • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti)<br><br>
-
-            • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale)<br><br>
-
-            Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.<br><br>
-
+        </div>
+        <div style="font-size: 18px;">
+            • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti).<br>
+        </div>
+        <div style="font-size: 18px;">
+            • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale).<br><br>
+        </div>
+        <div style="font-size: 18px;">
+            Puoi esportare i risultati in formato Excel e utilizzarli per i controlli presso il Casellario Giudiziale, in conformità al <strong>D.Lgs. 36/2023</strong>.<br>
+        </div>
+        <div style="font-size: 18px;">
             Una soluzione semplice e veloce per chi deve gestire verifiche aziendali.
         </div>
     """, unsafe_allow_html=True)
 
     st.divider ()
+
     st.markdown ("""
         <div style="font-size: 20px;">
             <strong>🔄 Versione:</strong> 1.2
