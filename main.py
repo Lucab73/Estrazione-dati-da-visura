@@ -466,7 +466,7 @@ if uploaded_file is not None:
 with st.sidebar:
     st.markdown ("""
         <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px;">
-            <h3 style="color: #1e3799;">ℹ️ Informazioni sull'app</h3>
+            <h3 style="color: #1e3799; font-size: 24px;">ℹ️ Informazioni sull'app</h3>
         </div>
     """, unsafe_allow_html=True)
     st.divider ()
