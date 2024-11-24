@@ -471,6 +471,7 @@ with st.sidebar:
         </div>
         """, unsafe_allow_html=True)
     st.write ("""
+    
     Carica il PDF di una visura camerale di Telemaco e ottieni:
 
     - **Dati societari principali** (ragione sociale, sede, forma giuridica, numero addetti).  
