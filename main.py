@@ -358,10 +358,10 @@ st.markdown(
     """
     <div style="text-align: center; padding: 2rem 0;">
         <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
-            Estrazione Nominativi da Visura Camerale TELEMACO
+            Analisi di Visure Camerali TELEMACO
         </h1>
         <h3 style="color: #576574; font-weight: normal;">
-            (per verifiche presso il Casellario)
+            (per Controlli ai sensi del D.Lgs. 36/2023)
         </h3>
     </div>
     """,
