@@ -12,32 +12,55 @@ st.set_page_config(
 )
 
 # Custom CSS per migliorare l'aspetto
-
-st.markdown("""
+st.markdown ("""
     <style>
-    /* Aggiungi bordo tratteggiato blu all'area di upload */
-    .css-1e4l1x8 {
+    /* Stile per l'area di upload */
+    [data-testid="stFileUploader"] {
         border: 2px dashed #1e3799 !important;
         border-radius: 10px !important;
-        padding: 2rem !important;
+        padding: 20px !important;
     }
-    .css-1e4l1x8:hover {
-        border: 2px dashed #0c2461 !important;
+
+    [data-testid="stFileUploader"]:hover {
+        border-color: #4a69bd !important;
+        background-color: #f8f9fa !important;
     }
-    /* Rimuove il testo predefinito (Drag and drop) */
-    .css-1e4l1x8 .stFileUploader {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+
+    /* Stile per la card dei dati societari */
+    .societary-data-card {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 20px 0;
+        border-left: 5px solid #1e3799;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .css-1e4l1x8 .stFileUploader p {
-        display: none;
+
+    .societary-data-card h3 {
+        color: #1e3799;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
     }
-    /* Modifica del pulsante per migliorare l'aspetto */
-    .css-1e4l1x8 button {
-        background-color: #1e3799 !important;
-        color: white !important;
-        border-radius: 5px !important;
+
+    /* Stile per i singoli campi dei dati societari */
+    .data-field {
+        background-color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #e9ecef;
+    }
+
+    .data-field strong {
+        color: #1e3799;
+    }
+
+    /* Separatore visivo */
+    .section-divider {
+        height: 2px;
+        background-color: #e9ecef;
+        margin: 30px 0;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -351,55 +374,71 @@ uploaded_file = st.file_uploader(
     type=["pdf"],
     key="pdf_uploader",
     help="Trascina o carica un file PDF da elaborare.",
-    label_visibility="collapsed"  # Riduce il testo che potrebbe interferire con lo stile
+    label_visibility="collapsed"
 )
 
 if uploaded_file is not None:
-        # Salva il file caricato
-        with open ("uploaded_file.pdf", "wb") as f:
-            f.write (uploaded_file.read ())
+    # Salva il file caricato
+    with open("uploaded_file.pdf", "wb") as f:
+        f.write(uploaded_file.read())
 
-        # Mostra un loader durante l'elaborazione
-        with st.spinner ('Elaborazione in corso...'):
-            dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica = estrai_dati ("uploaded_file.pdf")
+    # Mostra un loader durante l'elaborazione
+    with st.spinner('Elaborazione in corso...'):
+        dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica = estrai_dati("uploaded_file.pdf")
 
-        # Mostra i dati estratti
-        if dati:
-            df = pd.DataFrame (dati)
-            st.success ("✅ Dati estratti con successo!")
+    # Mostra i dati estratti
+    if dati:
+        df = pd.DataFrame(dati)
+        st.success("✅ Dati estratti con successo!")
 
-            # Card per i dati societari
-            st.markdown ("""
-                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; margin: 1rem 0;">
-                    <h3 style="color: #1e3799; margin-bottom: 1rem;">📊 Dati Societari</h3>
+        # Card per i dati societari con nuovo stile
+        st.markdown("""
+            <div class="societary-data-card">
+                <h3>📊 Dati Societari</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <div class="data-field">
+                            <strong>🏢 Ragione Sociale</strong><br>
+                            {ragione_sociale}
+                        </div>
+                        <div class="data-field">
+                            <strong>⚖️ Forma giuridica</strong><br>
+                            {forma_giuridica.upper()}
+                        </div>
+                        <div class="data-field">
+                            <strong>📍 Sede legale</strong><br>
+                            {comune}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="data-field">
+                            <strong>🏠 Indirizzo</strong><br>
+                            {via}
+                        </div>
+                        <div class="data-field">
+                            <strong>👥 Numero Addetti</strong><br>
+                            {numero_addetti}
+                        </div>
+                    </div>
                 </div>
-                """, unsafe_allow_html=True)
+            </div>
+            <div class="section-divider"></div>
+        """.format(
+            ragione_sociale=ragione_sociale,
+            forma_giuridica=forma_giuridica,
+            comune=comune,
+            via=via,
+            numero_addetti=numero_addetti
+        ), unsafe_allow_html=True)
 
-            col1, col2 = st.columns (2)
-            with col1:
-                st.markdown (f"**🏢 Ragione Sociale:**\n{ragione_sociale}")
-                st.markdown (f"**⚖️ Forma giuridica:**\n{forma_giuridica.upper()}")
-                st.markdown (f"**📍 Sede legale:**\n{comune}")
-            with col2:
-                st.markdown (f"**🏠 Indirizzo:**\n{via}")
-                st.markdown (f"**👥 Numero Addetti:**\n{numero_addetti}")
+        # Preparazione e download del file Excel
+        output_path = "Elenco per casellario.xlsx"
+        df.to_excel (output_path, index=False, engine='openpyxl')
 
-            # Visualizzazione della tabella con stile
-            st.markdown ("### 📋 Elenco Nominativi")
-            st.dataframe (
-                df,
-                use_container_width=True,
-                hide_index=True
-            )
-
-            # Preparazione e download del file Excel
-            output_path = "Elenco per casellario.xlsx"
-            df.to_excel (output_path, index=False, engine='openpyxl')
-
-            # Formattazione Excel
-            wb = openpyxl.load_workbook (output_path)
-            ws = wb.active
-            for col in ws.columns:
+        # Formattazione Excel
+        wb = openpyxl.load_workbook (output_path)
+        ws = wb.active
+        for col in ws.columns:
                 max_length = 0
                 column = col[0].column_letter
                 for cell in col:
@@ -410,17 +449,17 @@ if uploaded_file is not None:
                         pass
                 adjusted_width = max_length + 2
                 ws.column_dimensions[column].width = adjusted_width
-            wb.save (output_path)
+        wb.save (output_path)
 
-            # Pulsante di download stilizzato
-            with open (output_path, "rb") as f:
+        # Pulsante di download stilizzato
+        with open (output_path, "rb") as f:
                 st.download_button (
                     label="📥 Scarica il file Excel",
                     data=f,
                     file_name="Elenco per casellario.xlsx",
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                 )
-        else:
+    else:
             st.error ("❌ Nessun dato trovato nel file PDF.")
 
 # Barra laterale migliorata
