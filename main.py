@@ -466,12 +466,12 @@ if uploaded_file is not None:
 # Barra laterale migliorata
 with st.sidebar:
     st.markdown ("""
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px;">
+        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px;">
             <h3 style="color: #1e3799;">ℹ️ Informazioni sull'app</h3>
         </div>
         """, unsafe_allow_html=True)
+    st.divider ()
     st.write ("""
-    
     Carica il PDF di una visura camerale di Telemaco e ottieni:
 
     - **Dati societari principali** (ragione sociale, sede, forma giuridica, numero addetti).  
