@@ -463,9 +463,7 @@ if uploaded_file is not None:
     else:
             st.error ("❌ Nessun dato trovato nel file PDF.")
 
-Barra
-laterale
-migliorata
+# Barra laterale migliorata
 with st.sidebar:
     st.markdown ("""
         <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 6px;">
