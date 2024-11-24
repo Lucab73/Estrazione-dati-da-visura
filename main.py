@@ -472,7 +472,7 @@ with st.sidebar:
         """, unsafe_allow_html=True)
     st.divider ()
     st.markdown ("""
-        <div style="font-size: 18px;">
+        <div style="font-size: 20px;">
         Carica il PDF di una visura camerale di Telemaco e ottieni:<br><br>
 
         • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti)
