@@ -424,7 +424,14 @@ if uploaded_file is not None:
             </div>
             <div class="section-divider"></div>
         """, unsafe_allow_html=True)
-
+        
+        # Visualizzazione della tabella con stile
+        st.markdown ("### 📋 Elenco Nominativi")
+        st.dataframe (
+            df,
+            use_container_width=True,
+            hide_index=True
+        )
         # Preparazione e download del file Excel
         output_path = "Elenco per casellario.xlsx"
         df.to_excel (output_path, index=False, engine='openpyxl')
