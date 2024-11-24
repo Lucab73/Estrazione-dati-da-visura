@@ -469,7 +469,7 @@ with st.sidebar:
     st.markdown ("""
         <style>
         .sidebar-text {
-            font-size: 16px !important;
+            font-size: 20px !important;
             line-height: 1.6 !important;
         }
         </style>
