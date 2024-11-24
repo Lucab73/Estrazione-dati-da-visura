@@ -475,7 +475,7 @@ with st.sidebar:
         <div style="font-size: 18px;">
         Carica il PDF di una visura camerale di Telemaco e ottieni:<br><br>
 
-        • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti).<br><br>
+        • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti)
 
         • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale).<br><br>
 
