@@ -388,11 +388,11 @@ if uploaded_file is not None:
 
     # Mostra i dati estratti
     if dati:
-        df = pd.DataFrame(dati)
-        st.success("✅ Dati estratti con successo!")
+        df = pd.DataFrame (dati)
+        st.success ("✅ Dati estratti con successo!")
 
         # Card per i dati societari con nuovo stile
-        st.markdown("""
+        st.markdown (f"""
             <div class="societary-data-card">
                 <h3>📊 Dati Societari</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -403,7 +403,7 @@ if uploaded_file is not None:
                         </div>
                         <div class="data-field">
                             <strong>⚖️ Forma giuridica</strong><br>
-                            {forma_giuridica.upper()}
+                            {forma_giuridica.upper ()}
                         </div>
                         <div class="data-field">
                             <strong>📍 Sede legale</strong><br>
@@ -423,13 +423,7 @@ if uploaded_file is not None:
                 </div>
             </div>
             <div class="section-divider"></div>
-        """.format(
-            ragione_sociale=ragione_sociale,
-            forma_giuridica=forma_giuridica,
-            comune=comune,
-            via=via,
-            numero_addetti=numero_addetti
-        ), unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
         # Preparazione e download del file Excel
         output_path = "Elenco per casellario.xlsx"
