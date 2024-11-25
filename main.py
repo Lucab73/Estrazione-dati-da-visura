@@ -76,7 +76,7 @@ def estrai_dati(filepath):
     righe = text.splitlines ()
 
     # Ricerca della "Forma giuridica"
-    forma_giuridica = "<non trovato>"
+    forma_giuridica = "non trovato"
     for i, riga in enumerate (righe):
         if "Forma giuridica" in riga:
             # Trova tutte le parole successive alla "Forma giuridica"
@@ -106,7 +106,7 @@ def estrai_dati(filepath):
             break
 
     # Estrarre il numero degli addetti
-    numero_addetti = "<non trovato>"
+    numero_addetti = "non trovato"
     for i, riga in enumerate (righe):
         if "Addetti" in riga:
             # Cerca un numero che viene dopo una data (se presente) o dopo la parola Addetti
@@ -116,7 +116,7 @@ def estrai_dati(filepath):
                 break
 
     # Estrarre la ragione sociale
-    ragione_sociale = "<non trovato>"  # Impostiamo il valore di default
+    ragione_sociale = "non trovato"  # Impostiamo il valore di default
     for i, riga in enumerate (righe):
         if "VISURA" in riga or "FASCICOLO" in riga:
             # Ragione sociale inizia due righe dopo "VISURA"
@@ -127,8 +127,8 @@ def estrai_dati(filepath):
 
 
     # Estrarre l'indirizzo (Comune e Via)
-    comune = "<non trovato>"
-    via = "<non trovato>"
+    comune = "non trovato"
+    via = "non trovato"
 
     for i, riga in enumerate (righe):
         if "Indirizzo Sede" in riga:
