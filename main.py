@@ -424,7 +424,7 @@ if uploaded_file is not None:
             </div>
             <div class="section-divider"></div>
         """, unsafe_allow_html=True)
-
+        st.write (f"Debug: numero_addetti = {numero_addetti}")
         # Visualizzazione della tabella con stile
         st.markdown ("### 📋 Elenco Nominativi")
         st.dataframe (
