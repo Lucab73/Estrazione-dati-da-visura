@@ -266,11 +266,11 @@ def estrai_dati(filepath):
            return False
 
         # Verifica se successive_3_lettere sono nella seconda parola o quinto_sesto_carattere nella terza
-       if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
-          all(lettera in terza_parola for lettera in quinto_sesto_carattere):
-          return True  # Nome correttamente separato
-       else:
-          return False  # Se non trovato in seconda o terza parola
+        if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
+           all(lettera in terza_parola for lettera in quinto_sesto_carattere):
+           return True  # Nome correttamente separato
+        else:
+           return False  # Se non trovato in seconda o terza parola
 
     def rimuovi_numeri(riga):
         return re.sub (r"\d+", "", riga).strip ()
