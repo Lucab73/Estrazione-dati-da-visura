@@ -252,25 +252,27 @@ def estrai_dati(filepath):
 
         parole = nome.split ()
 
-        if len (parole) >= 2:
-            prima_parola = parole[0]
-            seconda_parola = parole[1]
-            terza_parola = parole[2] if len(parole) > 2 else ""
+        if len (parole) < 2:
+            return False  # Caso con una sola parola
 
-            # Verifica che le prime 3 lettere siano nella prima parola
-        if not all(lettera in prima_parola for lettera in prime_3_lettere):
-           return False
+        prima_parola = parole[0]
+        seconda_parola = parole[1]
+        terza_parola = parole[2] if len (parole) > 2 else ""
+
+        # Verifica che le prime 3 lettere siano nella prima parola
+        if not all (lettera in prima_parola for lettera in prime_3_lettere):
+            return False
 
         # Se successive_3_lettere sono nella terza parola, escludi la seconda parola dal cognome
-        if all(lettera in terza_parola for lettera in successive_3_lettere):
-           return False
+        if all (lettera in terza_parola for lettera in successive_3_lettere):
+            return False
 
         # Verifica se successive_3_lettere sono nella seconda parola o quinto_sesto_carattere nella terza
-        if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
-           all(lettera in terza_parola for lettera in quinto_sesto_carattere):
-           return True  # Nome correttamente separato
+        if all (lettera in seconda_parola for lettera in successive_3_lettere) or \
+                all (lettera in terza_parola for lettera in quinto_sesto_carattere):
+            return True  # Nome correttamente separato
         else:
-           return False  # Se non trovato in seconda o terza parola
+            return False  # Se non trovato in seconda o terza parola
 
     def rimuovi_numeri(riga):
         return re.sub (r"\d+", "", riga).strip ()
@@ -393,8 +395,8 @@ if uploaded_file is not None:
             <div class="societary-data-card">
                 <h3>📊 Dati Societari</h3>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <div class="data-field">
+                        <div>
+                            <div class="data-field" style="word-wrap: break-word; white-space: normal;">
                             <strong>🏢 Ragione Sociale</strong><br>
                             {ragione_sociale}
                         </div>
