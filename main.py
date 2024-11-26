@@ -255,25 +255,22 @@ def estrai_dati(filepath):
         if len (parole) >= 2:
             prima_parola = parole[0]
             seconda_parola = parole[1]
+            terza_parola = parole[2] if len(parole) > 2 else ""
 
-            # Verifica se le prime 3 lettere del codice fiscale sono nella prima parola
-            if all (lettera in prima_parola for lettera in prime_3_lettere):
-                # Verifica se le successive 3 lettere sono nella seconda parola
-                if len (parole) == 2:
-                    if all (lettera in seconda_parola for lettera in successive_3_lettere):
-                        return True  # Il nome è già separato correttamente
-                    else:
-                        return False  # Non trovate nella seconda parola, quindi non è separato correttamente
-                elif len (parole) >= 3:  # Caso con più di due parole
-                    terza_parola = parole[2]
-                    if all (lettera in seconda_parola for lettera in successive_3_lettere) or \
-                            all (lettera in terza_parola for lettera in quinto_sesto_carattere):
-                        return True  # Nome correttamente separato
-                    else:
-                        return False  # Se non trovato in seconda o terza parola
-        else:
-            # Caso base: una sola parola o non corrisponde
-            return all (lettera in parole[0] for lettera in prime_3_lettere)
+            # Verifica che le prime 3 lettere siano nella prima parola
+        if not all(lettera in prima_parola for lettera in prime_3_lettere):
+           return False
+
+        # Se successive_3_lettere sono nella terza parola, escludi la seconda parola dal cognome
+        if all(lettera in terza_parola for lettera in successive_3_lettere):
+           return False
+
+        # Verifica se successive_3_lettere sono nella seconda parola o quinto_sesto_carattere nella terza
+       if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
+          all(lettera in terza_parola for lettera in quinto_sesto_carattere):
+          return True  # Nome correttamente separato
+       else:
+          return False  # Se non trovato in seconda o terza parola
 
     def rimuovi_numeri(riga):
         return re.sub (r"\d+", "", riga).strip ()
