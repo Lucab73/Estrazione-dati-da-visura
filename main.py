@@ -116,13 +116,23 @@ def estrai_dati(filepath):
                 break
 
     # Estrarre la ragione sociale
-    ragione_sociale = "NON TROVATO"  # Impostiamo il valore di default
+    ragione_sociale = ""
     for i, riga in enumerate (righe):
         if "VISURA" in riga or "FASCICOLO" in riga:
-            # Ragione sociale inizia due righe dopo "VISURA"
+            # Ragione sociale inizia due o tre righe dopo "VISURA" o "FASCICOLO"
             inizio = i + 2
-            fine = inizio + 3  # Include 3 righe dopo
-            ragione_sociale = " ".join (righe[inizio:fine]).strip ()
+
+            # Verifica se la riga iniziale è vuota
+            if righe[inizio].strip () == "":
+               inizio += 1
+
+            # Concatenare righe fino a incontrare una riga vuota
+            for j in range (inizio, len (righe)):
+                if righe[j].strip () == "":  # Interrompe se la riga è vuota
+                    break
+                ragione_sociale += righe[j].strip () + " "
+
+            ragione_sociale = ragione_sociale.strip ()  # Rimuove spazi superflui
             break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
 
 
