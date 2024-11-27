@@ -329,16 +329,16 @@ def estrai_dati(filepath):
                         if len(parole_valide_totali) >= 2:
                             break
 
-    # Assegna il nome completo solo se abbiamo trovato almeno due parole
-    if len(parole_valide_totali) >= 2:
-        nome_completo = parole_valide_totali
-        nome_trovato = True 
-    
-    # Assegna il nome completo solo se abbiamo trovato almeno due parole
-    if len(parole_valide_totali) >= 2:
-        nome_completo = parole_valide_totali
-        nome_trovato = True
-    if nome_trovato:
+        # Assegna il nome completo solo se abbiamo trovato almeno due parole
+        if len(parole_valide_totali) >= 2:
+            nome_completo = parole_valide_totali
+            nome_trovato = True 
+        
+        # Assegna il nome completo solo se abbiamo trovato almeno due parole
+        if len(parole_valide_totali) >= 2:
+            nome_completo = parole_valide_totali
+            nome_trovato = True
+        if nome_trovato:
                     cognome_candidato = " ".join (nome_completo)
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
                         cognome = " ".join (nome_completo[:2])  # Cognome = prime due parole
