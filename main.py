@@ -368,7 +368,7 @@ if len(parole_valide_totali) >= 2:
     for sezione, testo in testo_sezioni.items ():
         elabora_sezione (testo, sezione)
 
-    return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
+return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
 
 # Interfaccia Streamlit
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
