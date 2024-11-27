@@ -304,27 +304,40 @@ def estrai_dati(filepath):
 
                 # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
                 offsets_da_provare = [0, -1, -2, -3]
-
+                parole_valide_totali = []  # Accumula le parole valide trovate finora
+                
                 for offset in offsets_da_provare:
                     index = i + offset
-                    if 0 <= index < len (righe):
-                        riga_corrente = rimuovi_numeri (righe[index].strip ())
-                        if riga_corrente and not riga_corrente.split ()[0].isupper ():
+                    if 0 <= index < len(righe):
+                        riga_corrente = rimuovi_numeri(righe[index].strip())
+                        if not riga_corrente:
                             continue
-
-                        parole = riga_corrente.split ()
-                        parole_valide = []
+                        
+                        # La prima parola deve iniziare con una maiuscola, altrimenti ignoriamo la riga
+                        if not riga_corrente.split()[0].isupper():
+                            continue
+                
+                        # Estraiamo le parole valide dalla riga corrente
+                        parole = riga_corrente.split()
                         for parola in parole:
-                            if is_valid_word (parola):
-                                parole_valide.append (parola)
-                            elif parola.islower ():
-                                break
+                            if is_valid_word(parola):
+                                parole_valide_totali.append(parola)
+                            elif parola.islower():
+                                break  # Se troviamo una parola minuscola, ci fermiamo su questa riga
+                
+                        # Se abbiamo trovato almeno due parole valide, interrompiamo la ricerca
+                        if len(parole_valide_totali) >= 2:
+                            break
 
-                        # Se troviamo parole valide in questa riga
-                        if parole_valide:
-                            nome_completo = parole_valide
-                            nome_trovato = True
-                            break  # Usciamo dal ciclo non appena troviamo un nome valido
+# Assegna il nome completo solo se abbiamo trovato almeno due parole
+if len(parole_valide_totali) >= 2:
+    nome_completo = parole_valide_totali
+    nome_trovato = True 
+
+# Assegna il nome completo solo se abbiamo trovato almeno due parole
+if len(parole_valide_totali) >= 2:
+    nome_completo = parole_valide_totali
+    nome_trovato = True
                 if nome_trovato:
 
                     cognome_candidato = " ".join (nome_completo)
