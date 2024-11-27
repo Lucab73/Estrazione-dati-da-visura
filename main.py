@@ -304,41 +304,30 @@ def estrai_dati(filepath):
 
                 # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
                 offsets_da_provare = [0, -1, -2, -3]
-                parole_valide_totali = []  # Accumula le parole valide trovate finora
-                
+
                 for offset in offsets_da_provare:
                     index = i + offset
-                    if 0 <= index < len(righe):
-                        riga_corrente = rimuovi_numeri(righe[index].strip())
-                        if not riga_corrente:
+                    if 0 <= index < len (righe):
+                        riga_corrente = rimuovi_numeri (righe[index].strip ())
+                        if riga_corrente and not riga_corrente.split ()[0].isupper ():
                             continue
-                        
-                        # La prima parola deve iniziare con una maiuscola, altrimenti ignoriamo la riga
-                        if not riga_corrente.split()[0].isupper():
-                            continue
-                
-                        # Estraiamo le parole valide dalla riga corrente
-                        parole = riga_corrente.split()
-                        for parola in parole:
-                            if is_valid_word(parola):
-                                parole_valide_totali.append(parola)
-                            elif parola.islower():
-                                break  # Se troviamo una parola minuscola, ci fermiamo su questa riga
-                
-                        # Se abbiamo trovato almeno due parole valide, interrompiamo la ricerca
-                        if len(parole_valide_totali) >= 2:
-                            break
 
-        # Assegna il nome completo solo se abbiamo trovato almeno due parole
-        if len(parole_valide_totali) >= 2:
-            nome_completo = parole_valide_totali
-            nome_trovato = True 
-        
-        # Assegna il nome completo solo se abbiamo trovato almeno due parole
-        if len(parole_valide_totali) >= 2:
-            nome_completo = parole_valide_totali
-            nome_trovato = True
-        if nome_trovato:
+                        parole = riga_corrente.split ()
+                        parole_valide = []
+                        for parola in parole:
+                            if is_valid_word (parola):
+                                parole_valide.append (parola)
+                            elif parola.islower ():
+                                break
+
+                        # Se troviamo parole valide in questa riga
+                        if parole_valide:
+                            nome_completo = parole_valide
+                            nome_trovato = True
+                            break  # Usciamo dal ciclo non appena troviamo un nome valido
+
+                if nome_trovato:
+
                     cognome_candidato = " ".join (nome_completo)
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
                         cognome = " ".join (nome_completo[:2])  # Cognome = prime due parole
@@ -451,6 +440,7 @@ if uploaded_file is not None:
             use_container_width=True,
             hide_index=True
         )
+        st.write (f"Ragione sociale completa: {ragione_sociale}")
         # Preparazione e download del file Excel
         output_path = "Elenco per casellario.xlsx"
         df.to_excel (output_path, index=False, engine='openpyxl')
