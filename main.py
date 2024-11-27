@@ -304,9 +304,8 @@ def estrai_dati(filepath):
 
                 # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
                 offsets_da_provare = [0, -1, -2, -3]
-
                 parole_valide_totali = []  # Accumula le parole valide trovate finora
-                ultima_parola_trovata = False  # Flag per controllare se abbiamo già gestito l'ultimo nome
+                ultima_parola = None       # Variabile per conservare l'ultima parola trovata
                 
                 for offset in offsets_da_provare:
                     index = i + offset
@@ -329,10 +328,10 @@ def estrai_dati(filepath):
                                 break  # Se troviamo una parola minuscola, ci fermiamo su questa riga
                 
                         # Caso: una sola parola valida sulla riga
-                        if len(parole_valide_riga) == 1 and not ultima_parola_trovata:
-                            # Aggiungila come ultima parola e segnala che abbiamo gestito l'ultimo nome
-                            parole_valide_totali.append(parole_valide_riga[0])
-                            ultima_parola_trovata = True
+                        if len(parole_valide_riga) == 1:
+                            # Memorizza temporaneamente come ultima parola
+                            if not ultima_parola:
+                                ultima_parola = parole_valide_riga[0]
                             continue  # Continua a cercare altre parole valide in righe precedenti
                 
                         # Caso: più parole valide sulla riga
@@ -342,6 +341,10 @@ def estrai_dati(filepath):
                         # Se abbiamo trovato almeno due parole valide, interrompiamo la ricerca
                         if len(parole_valide_totali) >= 2:
                             break
+                
+                # Aggiunge l'ultima parola solo dopo aver completato il nome
+                if ultima_parola:
+                    parole_valide_totali.append(ultima_parola)
                 
                 # Assegna il nome completo solo se abbiamo trovato almeno due parole
                 if len(parole_valide_totali) >= 2:
