@@ -307,24 +307,29 @@ def estrai_dati(filepath):
 
                 for offset in offsets_da_provare:
                     index = i + offset
-                    if 0 <= index < len (righe):
-                        riga_corrente = rimuovi_numeri (righe[index].strip ())
-                        if riga_corrente and not riga_corrente.split ()[0].isupper ():
+                    if 0 <= index < len(righe):
+                        riga_corrente = rimuovi_numeri(righe[index].strip())
+                        if not riga_corrente:
                             continue
 
-                        parole = riga_corrente.split ()
-                        parole_valide = []
-                        for parola in parole:
-                            if is_valid_word (parola):
-                                parole_valide.append (parola)
-                            elif parola.islower ():
-                                break
+                parole = riga_corrente.split()
+                parole_valide = []
 
-                        # Se troviamo parole valide in questa riga
-                        if parole_valide:
-                            nome_completo = parole_valide
-                            nome_trovato = True
-                            break  # Usciamo dal ciclo non appena troviamo un nome valido
+                # Se la prima parola non è maiuscola, probabilmente non è un nome valido.
+                if parole and not parole[0].isupper():
+                    continue
+
+                for parola in parole:
+                    if is_valid_word(parola):
+                        parole_valide.append(parola)
+                    elif parola.islower():
+                        break
+        
+                # Accumula parole valide dalla riga corrente
+                nome_completo = parole_valide + nome_completo
+        
+                # Se abbiamo già trovato un nome valido sulla riga corrente, non usciamo ma continuiamo
+                nome_trovato = True
 
                 if nome_trovato:
 
