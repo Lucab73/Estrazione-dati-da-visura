@@ -329,15 +329,15 @@ def estrai_dati(filepath):
                         if len(parole_valide_totali) >= 2:
                             break
 
-# Assegna il nome completo solo se abbiamo trovato almeno due parole
-if len(parole_valide_totali) >= 2:
-    nome_completo = parole_valide_totali
-    nome_trovato = True 
-
-# Assegna il nome completo solo se abbiamo trovato almeno due parole
-if len(parole_valide_totali) >= 2:
-    nome_completo = parole_valide_totali
-    nome_trovato = True
+    # Assegna il nome completo solo se abbiamo trovato almeno due parole
+    if len(parole_valide_totali) >= 2:
+        nome_completo = parole_valide_totali
+        nome_trovato = True 
+    
+    # Assegna il nome completo solo se abbiamo trovato almeno due parole
+    if len(parole_valide_totali) >= 2:
+        nome_completo = parole_valide_totali
+        nome_trovato = True
     if nome_trovato:
                     cognome_candidato = " ".join (nome_completo)
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
@@ -368,7 +368,7 @@ if len(parole_valide_totali) >= 2:
     for sezione, testo in testo_sezioni.items ():
         elabora_sezione (testo, sezione)
 
-return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
+    return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
 
 # Interfaccia Streamlit
 #st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
