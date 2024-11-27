@@ -338,8 +338,7 @@ if len(parole_valide_totali) >= 2:
 if len(parole_valide_totali) >= 2:
     nome_completo = parole_valide_totali
     nome_trovato = True
-                if nome_trovato:
-
+    if nome_trovato:
                     cognome_candidato = " ".join (nome_completo)
                     if not verifica_cognome (cognome_candidato, codice_fiscale):
                         cognome = " ".join (nome_completo[:2])  # Cognome = prime due parole
