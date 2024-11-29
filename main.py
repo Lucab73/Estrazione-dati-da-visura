@@ -465,7 +465,6 @@ if uploaded_file is not None:
             use_container_width=True,
             hide_index=True
         )
-        st.write (f"Ragione sociale completa: {ragione_sociale}")
         # Preparazione e download del file Excel
         output_path = "Elenco per casellario.xlsx"
         df.to_excel (output_path, index=False, engine='openpyxl')
