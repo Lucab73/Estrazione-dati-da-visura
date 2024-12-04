@@ -258,6 +258,7 @@ def estrai_dati(filepath):
         """
         prime_3_lettere = codice_fiscale[:3]
         successive_3_lettere = codice_fiscale[3:6]
+        quarto_carattere = codice_fiscale[3:4]
         quinto_sesto_carattere = codice_fiscale[4:6]
 
         parole = nome.split ()
@@ -279,7 +280,8 @@ def estrai_dati(filepath):
 
         # Verifica se successive_3_lettere sono nella seconda parola o quinto_sesto_carattere nella terza
         if all (lettera in seconda_parola for lettera in successive_3_lettere) or \
-                all (lettera in terza_parola for lettera in quinto_sesto_carattere):
+                all (lettera in terza_parola for lettera in quinto_sesto_carattere): or \
+                    all (lettera in seconda_parola for lettera in quarto_carattere):
             return True  # Nome correttamente separato
         else:
             return False  # Se non trovato in seconda o terza parola
