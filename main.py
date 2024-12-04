@@ -273,20 +273,18 @@ def estrai_dati(filepath):
         # Verifica che le prime 3 lettere siano nella prima parola
         if not all (lettera in prima_parola for lettera in prime_3_lettere):
             return False
-        else:
-            return True
 
         # Se successive_3_lettere sono nella terza parola, escludi la seconda parola dal cognome
-       # if all (lettera in terza_parola for lettera in successive_3_lettere):
-        #    return False
+        if all (lettera in terza_parola for lettera in successive_3_lettere):
+            return False
 
         # Verifica se successive_3_lettere sono nella seconda parola, quinto_sesto_carattere nella terza, o quarto_carattere nella seconda
-        #if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
-         #       all(lettera in terza_parola for lettera in quinto_sesto_carattere) or \
-          #      all(lettera in seconda_parola for lettera in quarto_carattere):  # Rimosso l'or superfluo
-           # return True  # Nome correttamente separato
-       # else:
-        #    return False  # Se non trovato in seconda o terza parola
+        if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
+                all(lettera in terza_parola for lettera in quinto_sesto_carattere) or \
+                all(lettera in seconda_parola for lettera in quarto_carattere):  # Rimosso l'or superfluo
+            return True  # Nome correttamente separato
+        else:
+            return False  # Se non trovato in seconda o terza parola
 
     def rimuovi_numeri(riga):
         return re.sub (r"\d+", "", riga).strip ()
