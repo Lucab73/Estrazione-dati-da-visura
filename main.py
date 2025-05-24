@@ -361,8 +361,7 @@ def estrai_dati(filepath):
         return all (lettera in "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÈÌÒÙàèìòù''\"-" for lettera in parola)
 
     def elabora_sezione(testo_sezione, tipo_sezione):
-      righe = testo_sezione.splitlines()
-
+        righe = testo_sezione.splitlines()
         for i, riga in enumerate(righe):
             match_cf = re.search(pattern_cf, riga)
             if match_cf:
