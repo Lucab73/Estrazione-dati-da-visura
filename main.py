@@ -361,91 +361,103 @@ def estrai_dati(filepath):
         return all (lettera in "ABCDEFGHIJKLMNOPQRSTUVWXYZÀÈÌÒÙàèìòù''\"-" for lettera in parola)
 
     def elabora_sezione(testo_sezione, tipo_sezione):
-        righe = testo_sezione.splitlines ()
-
-        for i, riga in enumerate (righe):
-            match_cf = re.search (pattern_cf, riga)
+        righe = testo_sezione.splitlines()
+    
+        for i, riga in enumerate(righe):
+            match_cf = re.search(pattern_cf, riga)
             if match_cf:
-                codice_fiscale = match_cf.group ()
-
+                codice_fiscale = match_cf.group()
+    
                 # Analisi progressiva delle righe, partendo dalla riga corrente
                 nome_completo = []
                 nome_trovato = False
-
-                # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
-                offsets_da_provare = [0, -1, -2, -3]
+    
+                # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3, +1, +2
+                offsets_da_provare = [0, -1, -2, -3, +1, +2]
                 parole_valide_totali = []  # Accumula le parole valide trovate finora
                 ultima_parola = None  # Variabile per conservare l'ultima parola trovata
-
+    
                 for offset in offsets_da_provare:
                     index = i + offset
-                    if 0 <= index < len (righe):
-                        riga_corrente = rimuovi_numeri (righe[index].strip ())
+                    if 0 <= index < len(righe):
+                        riga_corrente = rimuovi_numeri(righe[index].strip())
                         if not riga_corrente:
                             continue
-
+    
                         # La prima parola deve iniziare con una maiuscola, altrimenti ignoriamo la riga
-                        if not riga_corrente.split ()[0].isupper ():
+                        parole_riga = riga_corrente.split()
+                        if not parole_riga or not parole_riga[0][0].isupper():
                             continue
-
+    
+                        # Parole che indicano l'inizio di altre informazioni (ferma l'estrazione del nome)
+                        parole_stop = ["Nato", "Nata", "Codice", "fiscale", "domicilio", "carica", "Data", "poteri"]
+                        
                         # Estraiamo le parole valide dalla riga corrente
-                        parole = riga_corrente.split ()
                         parole_valide_riga = []
-                        for parola in parole:
-                            if is_valid_word (parola):
-                                parole_valide_riga.append (parola)
-                            elif parola.islower ():
+                        for parola in parole_riga:
+                            # Se troviamo una parola di stop, interrompiamo l'estrazione
+                            if any(stop_word in parola for stop_word in parole_stop):
+                                break
+                            if is_valid_word(parola):
+                                parole_valide_riga.append(parola)
+                            elif parola.islower():
                                 break  # Se troviamo una parola minuscola, ci fermiamo su questa riga
-
+    
                         # Caso: una sola parola valida sulla riga
-                        if len (parole_valide_riga) == 1:
-                            # Memorizza temporaneamente come ultima parola
-                            if not ultima_parola:
-                                ultima_parola = parole_valide_riga[0]
-                            continue  # Continua a cercare altre parole valide in righe precedenti
-
+                        if len(parole_valide_riga) == 1:
+                            # Se stiamo guardando righe successive (+1, +2) e la parola è tutta maiuscola
+                            # la aggiungiamo direttamente alle parole valide totali
+                            if offset > 0 and parole_valide_riga[0].isupper():
+                                parole_valide_totali.append(parole_valide_riga[0])
+                            elif offset <= 0:
+                                # Memorizza temporaneamente come ultima parola per righe precedenti
+                                if not ultima_parola:
+                                    ultima_parola = parole_valide_riga[0]
+                            continue
+    
                         # Caso: più parole valide sulla riga
-                        elif len (parole_valide_riga) > 1:
-                            parole_valide_totali.extend (parole_valide_riga)
-
-                        # Se abbiamo trovato almeno due parole valide, interrompiamo la ricerca
-                        if len (parole_valide_totali) >= 2:
-                            break
-
-                # Aggiunge l'ultima parola solo dopo aver completato il nome
-                if ultima_parola:
-                    parole_valide_totali.append (ultima_parola)
-
+                        elif len(parole_valide_riga) > 1:
+                            parole_valide_totali.extend(parole_valide_riga)
+    
+                        # Se abbiamo trovato almeno due parole valide, 
+                        # continuiamo a cercare nelle righe successive per eventuali nomi aggiuntivi
+                        if len(parole_valide_totali) >= 2 and offset <= 0:
+                            # Continua a cercare nelle righe successive per completare il nome
+                            continue
+    
+                # Aggiunge l'ultima parola solo se necessario
+                if ultima_parola and ultima_parola not in parole_valide_totali:
+                    parole_valide_totali.append(ultima_parola)
+    
                 # Assegna il nome completo solo se abbiamo trovato almeno due parole
-                if len (parole_valide_totali) >= 2:
+                if len(parole_valide_totali) >= 2:
                     nome_completo = parole_valide_totali
                     nome_trovato = True
-
+    
                 if nome_trovato:
-
-                    cognome_candidato = " ".join (nome_completo)
-                    if not verifica_cognome (cognome_candidato, codice_fiscale):
-                        cognome = " ".join (nome_completo[:2])  # Cognome = prime due parole
-                        nomi = " ".join (nome_completo[2:]) if len (nome_completo) > 2 else ""
+                    cognome_candidato = " ".join(nome_completo)
+                    if not verifica_cognome(cognome_candidato, codice_fiscale):
+                        cognome = " ".join(nome_completo[:2])  # Cognome = prime due parole
+                        nomi = " ".join(nome_completo[2:]) if len(nome_completo) > 2 else ""
                     else:
                         cognome = nome_completo[0]  # Cognome = prima parola
-                        nomi = " ".join (nome_completo[1:])
-
+                        nomi = " ".join(nome_completo[1:])
+    
                     # Estrai data di nascita e codice catastale dal codice fiscale
-                    data_nascita = decodifica_data_nascita (codice_fiscale)
-                    codice_catastale = estrai_codice_catastale (codice_fiscale)
-
+                    data_nascita = decodifica_data_nascita(codice_fiscale)
+                    codice_catastale = estrai_codice_catastale(codice_fiscale)
+    
                     # Se il codice fiscale è già presente
                     if codice_fiscale in codici_trovati:
                         # Aggiorna il record esistente aggiungendo la nuova sezione
                         for record in dati:
                             if record["Codice Fiscale"] == codice_fiscale:
-                                if tipo_sezione not in record["Sezione"].split (", "):
+                                if tipo_sezione not in record["Sezione"].split(", "):
                                     record["Sezione"] = f"{record['Sezione']}, {tipo_sezione}"
                     else:
                         # Crea un nuovo record
                         codici_trovati[codice_fiscale] = True
-                        dati.append ({
+                        dati.append({
                             "Cognome": cognome,
                             "Nomi": nomi,
                             "Codice Fiscale": codice_fiscale,
