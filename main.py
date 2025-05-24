@@ -3,9 +3,10 @@ import pandas as pd
 import openpyxl
 from PyPDF2 import PdfReader
 import re
+from datetime import datetime
 
 # Configurazione iniziale della pagina con tema personalizzato
-st.set_page_config(
+st.set_page_config (
     page_title="Estrazione Nominativi",
     page_icon="📜",
     layout="centered"
@@ -64,6 +65,74 @@ st.markdown ("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+
+# Funzione per decodificare la data di nascita dal codice fiscale
+def decodifica_data_nascita(codice_fiscale):
+    """
+    Estrae la data di nascita dal codice fiscale italiano
+    Formato: RRSSAAMMGGCCCC
+    Posizioni 7-12: AAMMGG (Anno, Mese, Giorno)
+    """
+    try:
+        if len (codice_fiscale) != 16:
+            return "N/A"
+
+        # Estrai anno, mese, giorno
+        anno_cf = codice_fiscale[6:8]
+        mese_cf = codice_fiscale[8:9]
+        giorno_cf = codice_fiscale[9:11]
+
+        # Decodifica dell'anno (assumiamo che anni 00-30 siano 2000-2030, 31-99 siano 1931-1999)
+        anno = int (anno_cf)
+        if anno <= 30:
+            anno += 2000
+        else:
+            anno += 1900
+
+        # Decodifica del mese
+        mesi = {
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'H': 6,
+            'L': 7, 'M': 8, 'P': 9, 'R': 10, 'S': 11, 'T': 12
+        }
+
+        if mese_cf not in mesi:
+            return "N/A"
+
+        mese = mesi[mese_cf]
+
+        # Decodifica del giorno (per le donne si aggiunge 40)
+        giorno = int (giorno_cf)
+        if giorno > 31:
+            giorno -= 40
+
+        # Verifica validità della data
+        try:
+            data = datetime (anno, mese, giorno)
+            return data.strftime ("%d/%m/%Y")
+        except ValueError:
+            return "N/A"
+
+    except (ValueError, IndexError, KeyError):
+        return "N/A"
+
+
+# Funzione per estrarre il codice catastale dal codice fiscale
+def estrai_codice_catastale(codice_fiscale):
+    """
+    Estrae il codice catastale del comune di nascita dal codice fiscale
+    Si trova negli ultimi 4 caratteri del codice fiscale
+    """
+    try:
+        if len (codice_fiscale) != 16:
+            return "N/A"
+
+        codice_catastale = codice_fiscale[11:15]
+        return codice_catastale
+
+    except (ValueError, IndexError):
+        return "N/A"
+
 
 # Funzione per estrarre i dati
 def estrai_dati(filepath):
@@ -124,7 +193,7 @@ def estrai_dati(filepath):
 
             # Verifica se la riga iniziale è vuota
             if righe[inizio].strip () == "":
-               inizio += 1
+                inizio += 1
 
             # Concatenare righe fino a incontrare una riga vuota
             for j in range (inizio, len (righe)):
@@ -134,7 +203,6 @@ def estrai_dati(filepath):
 
             ragione_sociale = ragione_sociale.strip ()  # Rimuove spazi superflui
             break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
-
 
     # Estrarre l'indirizzo (Comune e Via)
     comune = "NON TROVATO"
@@ -247,7 +315,7 @@ def estrai_dati(filepath):
 
     # Regex e funzioni di supporto
     pattern_cf = r"\b[A-Z]{6}[0-9]{2}[A-Z][0-9]{2}[A-Z][0-9]{3}[A-Z]\b"
-    codici_trovati = {} # Dizionario invece di set
+    codici_trovati = {}  # Dizionario invece di set
     dati = []
 
     def verifica_cognome(nome, codice_fiscale):
@@ -279,9 +347,9 @@ def estrai_dati(filepath):
             return False
 
         # Verifica se successive_3_lettere sono nella seconda parola, quinto_sesto_carattere nella terza, o quarto_carattere nella seconda
-        if all(lettera in seconda_parola for lettera in successive_3_lettere) or \
-                all(lettera in terza_parola for lettera in quinto_sesto_carattere) or \
-                all(lettera in seconda_parola for lettera in quarto_carattere):  # Rimosso l'or superfluo
+        if all (lettera in seconda_parola for lettera in successive_3_lettere) or \
+                all (lettera in terza_parola for lettera in quinto_sesto_carattere) or \
+                all (lettera in seconda_parola for lettera in quarto_carattere):  # Rimosso l'or superfluo
             return True  # Nome correttamente separato
         else:
             return False  # Se non trovato in seconda o terza parola
@@ -307,49 +375,49 @@ def estrai_dati(filepath):
                 # Lista degli offset da provare in ordine: 0 (riga corrente), -1, -2, -3
                 offsets_da_provare = [0, -1, -2, -3]
                 parole_valide_totali = []  # Accumula le parole valide trovate finora
-                ultima_parola = None       # Variabile per conservare l'ultima parola trovata
-                
+                ultima_parola = None  # Variabile per conservare l'ultima parola trovata
+
                 for offset in offsets_da_provare:
                     index = i + offset
-                    if 0 <= index < len(righe):
-                        riga_corrente = rimuovi_numeri(righe[index].strip())
+                    if 0 <= index < len (righe):
+                        riga_corrente = rimuovi_numeri (righe[index].strip ())
                         if not riga_corrente:
                             continue
-                        
+
                         # La prima parola deve iniziare con una maiuscola, altrimenti ignoriamo la riga
-                        if not riga_corrente.split()[0].isupper():
+                        if not riga_corrente.split ()[0].isupper ():
                             continue
-                
+
                         # Estraiamo le parole valide dalla riga corrente
-                        parole = riga_corrente.split()
+                        parole = riga_corrente.split ()
                         parole_valide_riga = []
                         for parola in parole:
-                            if is_valid_word(parola):
-                                parole_valide_riga.append(parola)
-                            elif parola.islower():
+                            if is_valid_word (parola):
+                                parole_valide_riga.append (parola)
+                            elif parola.islower ():
                                 break  # Se troviamo una parola minuscola, ci fermiamo su questa riga
-                
+
                         # Caso: una sola parola valida sulla riga
-                        if len(parole_valide_riga) == 1:
+                        if len (parole_valide_riga) == 1:
                             # Memorizza temporaneamente come ultima parola
                             if not ultima_parola:
                                 ultima_parola = parole_valide_riga[0]
                             continue  # Continua a cercare altre parole valide in righe precedenti
-                
+
                         # Caso: più parole valide sulla riga
-                        elif len(parole_valide_riga) > 1:
-                            parole_valide_totali.extend(parole_valide_riga)
-                
+                        elif len (parole_valide_riga) > 1:
+                            parole_valide_totali.extend (parole_valide_riga)
+
                         # Se abbiamo trovato almeno due parole valide, interrompiamo la ricerca
-                        if len(parole_valide_totali) >= 2:
+                        if len (parole_valide_totali) >= 2:
                             break
-                
+
                 # Aggiunge l'ultima parola solo dopo aver completato il nome
                 if ultima_parola:
-                    parole_valide_totali.append(ultima_parola)
-                
+                    parole_valide_totali.append (ultima_parola)
+
                 # Assegna il nome completo solo se abbiamo trovato almeno due parole
-                if len(parole_valide_totali) >= 2:
+                if len (parole_valide_totali) >= 2:
                     nome_completo = parole_valide_totali
                     nome_trovato = True
 
@@ -362,6 +430,10 @@ def estrai_dati(filepath):
                     else:
                         cognome = nome_completo[0]  # Cognome = prima parola
                         nomi = " ".join (nome_completo[1:])
+
+                    # Estrai data di nascita e codice catastale dal codice fiscale
+                    data_nascita = decodifica_data_nascita (codice_fiscale)
+                    codice_catastale = estrai_codice_catastale (codice_fiscale)
 
                     # Se il codice fiscale è già presente
                     if codice_fiscale in codici_trovati:
@@ -377,6 +449,8 @@ def estrai_dati(filepath):
                             "Cognome": cognome,
                             "Nomi": nomi,
                             "Codice Fiscale": codice_fiscale,
+                            "Data di nascita": data_nascita,
+                            "Codice catastale": codice_catastale,
                             "Sezione": tipo_sezione
                         })
 
@@ -386,11 +460,12 @@ def estrai_dati(filepath):
 
     return dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica
 
+
 # Interfaccia Streamlit
-#st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
+# st.set_page_config(page_title="Estrazione Nominativi", page_icon="📜", layout="centered")
 
 # Contenitore principale con stile migliorato
-st.markdown(
+st.markdown (
     """
     <div style="text-align: center; padding: 2rem 0;">
         <h1 style="color: #1e3799; margin-bottom: 0.5rem;">
@@ -405,7 +480,7 @@ st.markdown(
 )
 
 # Area di upload con testo personalizzato
-uploaded_file = st.file_uploader(
+uploaded_file = st.file_uploader (
     label="Carica un file PDF di una visura camerale Telemaco",
     type=["pdf"],
     key="pdf_uploader",
@@ -415,12 +490,12 @@ uploaded_file = st.file_uploader(
 
 if uploaded_file is not None:
     # Salva il file caricato
-    with open("uploaded_file.pdf", "wb") as f:
-        f.write(uploaded_file.read())
+    with open ("uploaded_file.pdf", "wb") as f:
+        f.write (uploaded_file.read ())
 
     # Mostra un loader durante l'elaborazione
-    with st.spinner('Elaborazione in corso...'):
-        dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica = estrai_dati("uploaded_file.pdf")
+    with st.spinner ('Elaborazione in corso...'):
+        dati, ragione_sociale, comune, via, numero_addetti, forma_giuridica = estrai_dati ("uploaded_file.pdf")
 
     # Mostra i dati estratti
     if dati:
@@ -475,28 +550,28 @@ if uploaded_file is not None:
         wb = openpyxl.load_workbook (output_path)
         ws = wb.active
         for col in ws.columns:
-                max_length = 0
-                column = col[0].column_letter
-                for cell in col:
-                    try:
-                        if cell.value:
-                            max_length = max (max_length, len (str (cell.value)))
-                    except:
-                        pass
-                adjusted_width = max_length + 2
-                ws.column_dimensions[column].width = adjusted_width
+            max_length = 0
+            column = col[0].column_letter
+            for cell in col:
+                try:
+                    if cell.value:
+                        max_length = max (max_length, len (str (cell.value)))
+                except:
+                    pass
+            adjusted_width = max_length + 2
+            ws.column_dimensions[column].width = adjusted_width
         wb.save (output_path)
 
         # Pulsante di download stilizzato
         with open (output_path, "rb") as f:
-                st.download_button (
-                    label="📥 Scarica il file Excel",
-                    data=f,
-                    file_name="Elenco per casellario.xlsx",
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                )
+            st.download_button (
+                label="📥 Scarica il file Excel",
+                data=f,
+                file_name="Elenco per casellario.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
     else:
-            st.error ("❌ Nessun dato trovato nel file PDF.")
+        st.error ("❌ Nessun dato trovato nel file PDF.")
 
 with st.sidebar:
     st.markdown ("""
@@ -514,7 +589,7 @@ with st.sidebar:
             • <strong>Dati societari principali</strong> (ragione sociale, sede, forma giuridica, numero addetti).<br>
         </div>
         <div style="font-size: 18px;">
-            • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale).<br><br>
+            • <strong>Elenco delle cariche aziendali</strong> (nome, cognome, codice fiscale, data di nascita, codice catastale).<br><br>
         </div>
         <div style="font-size: 18px;">
             Puoi esportare i risultati in formato Excel per effettuare i controlli previsti dal <strong>D.Lgs. 36/2023</strong>.<br><br>
@@ -528,7 +603,7 @@ with st.sidebar:
 
     st.markdown ("""
         <div style="font-size: 20px;">
-            <strong>🔄 Versione:</strong> 1.2 (Beta)
+            <strong>🔄 Versione:</strong> 1.3 (Beta)
         </div>
     """, unsafe_allow_html=True)
     st.markdown ("""
