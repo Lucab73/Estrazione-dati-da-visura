@@ -196,10 +196,13 @@ def estrai_dati(filepath):
             if inizio >= len(righe):
                 break
             # ===== DEBUG RAGIONE SOCIALE =====
-            st.write("🔍 DEBUG - Ragione Sociale trovata:")
-            st.write(f"Valore: '{ragione_sociale}'")
-            st.write(f"Lunghezza: {len(ragione_sociale)}")
-            st.write(f"Tipo: {type(ragione_sociale)}")
+            st.write("🔍 DEBUG - Analisi testo PDF:")
+            st.write(f"Numero totale righe estratte: {len(righe)}")
+            st.write("Prime 20 righe del PDF:")
+            for idx, riga in enumerate(righe[:20]):
+            st.write(f"Riga {idx}: '{riga}'")
+            st.write("---")
+            st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
             # =================================
             # Verifica se la riga iniziale è vuota
             if inizio < len(righe) and righe[inizio].strip() == "":
