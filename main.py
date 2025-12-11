@@ -192,16 +192,15 @@ def estrai_dati(filepath):
         if "VISURA" in riga or "FASCICOLO" in riga:
             # Ragione sociale inizia due o tre righe dopo "VISURA" o "FASCICOLO"
             inizio = i + 2
-
             # Controllo che l'indice sia valido
             if inizio >= len(righe):
                 break
-                # ===== DEBUG RAGIONE SOCIALE =====
-                st.write("🔍 DEBUG - Ragione Sociale trovata:")
-                st.write(f"Valore: '{ragione_sociale}'")
-                st.write(f"Lunghezza: {len(ragione_sociale)}")
-                st.write(f"Tipo: {type(ragione_sociale)}")
-                # =================================
+    # ===== DEBUG RAGIONE SOCIALE =====
+    st.write("🔍 DEBUG - Ragione Sociale trovata:")
+    st.write(f"Valore: '{ragione_sociale}'")
+    st.write(f"Lunghezza: {len(ragione_sociale)}")
+    st.write(f"Tipo: {type(ragione_sociale)}")
+    # =================================
             # Verifica se la riga iniziale è vuota
             if inizio < len(righe) and righe[inizio].strip() == "":
                 inizio += 1
