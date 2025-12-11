@@ -195,15 +195,7 @@ def estrai_dati(filepath):
             # Controllo che l'indice sia valido
             if inizio >= len(righe):
                 break
-            # ===== DEBUG RAGIONE SOCIALE =====
-            st.write("🔍 DEBUG - Analisi testo PDF:")
-            st.write(f"Numero totale righe estratte: {len(righe)}")
-            st.write("Prime 50 righe del PDF:")
-            for idx, riga in enumerate(righe[:50]):
-               st.write(f"Riga {idx}: '{riga}'")
-               st.write("---")
-               st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
-            # =================================
+        
             # Verifica se la riga iniziale è vuota
             if inizio < len(righe) and righe[inizio].strip() == "":
                 inizio += 1
@@ -213,6 +205,7 @@ def estrai_dati(filepath):
                 break
 
             # Concatenare righe fino a incontrare una riga vuota
+            ragione_sociale = ""  # ← RESET per evitare "NON TROVATO"
             for j in range(inizio, len(righe)):
                 if righe[j].strip() == "":  # Interrompe se la riga è vuota
                     break
