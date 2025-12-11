@@ -200,9 +200,9 @@ def estrai_dati(filepath):
             st.write(f"Numero totale righe estratte: {len(righe)}")
             st.write("Prime 20 righe del PDF:")
             for idx, riga in enumerate(righe[:20]):
-            st.write(f"Riga {idx}: '{riga}'")
-            st.write("---")
-            st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
+               st.write(f"Riga {idx}: '{riga}'")
+               st.write("---")
+               st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
             # =================================
             # Verifica se la riga iniziale è vuota
             if inizio < len(righe) and righe[inizio].strip() == "":
