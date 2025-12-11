@@ -186,40 +186,85 @@ def estrai_dati(filepath):
                 numero_addetti = match.group(1)
                 break
 
-    # Estrarre la ragione sociale
+    # ===== NUOVA LOGICA PER ESTRARRE LA RAGIONE SOCIALE =====
     ragione_sociale = "NON TROVATO"
+    
+    # Cerca la riga che contiene "VISURA ORDINARIA" o "VISURA STORICA"
     for i, riga in enumerate(righe):
-        if "VISURA" in riga or "FASCICOLO" in riga:
-            # Ragione sociale inizia due o tre righe dopo "VISURA" o "FASCICOLO"
-            inizio = i + 2
-            # Controllo che l'indice sia valido
-            if inizio >= len(righe):
-                break
-            # ===== DEBUG RAGIONE SOCIALE =====
-            st.write("🔍 DEBUG - Analisi testo PDF:")
-            st.write(f"Numero totale righe estratte: {len(righe)}")
-            st.write("Prime 50 righe del PDF:")
-            for idx, riga in enumerate(righe[:50]):
-               st.write(f"Riga {idx}: '{riga}'")
-               st.write("---")
-               st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
-            # =================================
-            # Verifica se la riga iniziale è vuota
-            if inizio < len(righe) and righe[inizio].strip() == "":
-                inizio += 1
+        if "VISURA ORDINARIA" in riga or "VISURA STORICA" in riga:
+            # Inizia a cercare la ragione sociale dalle righe successive
+            ragione_sociale_parti = []
+            
+            # Parti dalla riga successiva
+            for j in range(i + 1, min(i + 20, len(righe))):  # Cerca al massimo nelle successive 20 righe
+                riga_corrente = righe[j].strip()
+                
+                # Salta righe vuote
+                if not riga_corrente:
+                    continue
+                
+                # Se la riga inizia con minuscola o contiene pattern tipici di altre sezioni, fermati
+                if riga_corrente and len(riga_corrente) > 0:
+                    # Pattern che indicano la fine della ragione sociale
+                    pattern_fine = [
+                        "Il QR Code",
+                        "DATI ANAGRAFICI",
+                        "Indirizzo Sede",
+                        "Codice fiscale",
+                        "Data atto",
+                        "Numero REA"
+                    ]
+                    
+                    # Se trova uno di questi pattern, significa che la ragione sociale è finita
+                    if any(pattern in riga_corrente for pattern in pattern_fine):
+                        break
+                    
+                    # Se la riga inizia con minuscola, probabilmente non è parte della ragione sociale
+                    if riga_corrente[0].islower():
+                        break
+                    
+                    # Aggiungi la riga alla ragione sociale
+                    ragione_sociale_parti.append(riga_corrente)
+                    
+                    # Se troviamo una riga che termina con un punto, probabilmente è la fine
+                    if riga_corrente.endswith('.'):
+                        break
+            
+            # Unisci tutte le parti trovate
+            if ragione_sociale_parti:
+                ragione_sociale = " ".join(ragione_sociale_parti).strip()
+            
+            break
+    
+    # Se non ha trovato nulla con il metodo sopra, prova con "FASCICOLO"
+    if ragione_sociale == "NON TROVATO":
+        for i, riga in enumerate(righe):
+            if "FASCICOLO" in riga:
+                # Ragione sociale inizia due o tre righe dopo "FASCICOLO"
+                inizio = i + 2
 
-            # Controllo che l'indice aggiornato sia ancora valido
-            if inizio >= len(righe):
-                break
-
-            # Concatenare righe fino a incontrare una riga vuota
-            for j in range(inizio, len(righe)):
-                if righe[j].strip() == "":  # Interrompe se la riga è vuota
+                # Controllo che l'indice sia valido
+                if inizio >= len(righe):
                     break
-                ragione_sociale += righe[j].strip() + " "
 
-            ragione_sociale = ragione_sociale.strip()  # Rimuove spazi superflui
-            break  # Interrompiamo la ricerca dopo aver trovato la prima occorrenza
+                # Verifica se la riga iniziale è vuota
+                if inizio < len(righe) and righe[inizio].strip() == "":
+                    inizio += 1
+
+                # Controllo che l'indice aggiornato sia ancora valido
+                if inizio >= len(righe):
+                    break
+
+                # Concatenare righe fino a incontrare una riga vuota
+                ragione_sociale_temp = ""
+                for j in range(inizio, len(righe)):
+                    if righe[j].strip() == "":  # Interrompe se la riga è vuota
+                        break
+                    ragione_sociale_temp += righe[j].strip() + " "
+
+                if ragione_sociale_temp:
+                    ragione_sociale = ragione_sociale_temp.strip()
+                break
 
     # Estrarre l'indirizzo (Comune e Via)
     comune = "NON TROVATO"
@@ -618,7 +663,7 @@ with st.sidebar:
 
     st.markdown("""
         <div style="font-size: 20px;">
-            <strong>📄 Versione:</strong> 1.4 (Beta)
+            <strong>📄 Versione:</strong> 1.5 (Beta)
         </div>
     """, unsafe_allow_html=True)
     st.markdown("""
