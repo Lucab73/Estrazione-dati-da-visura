@@ -191,7 +191,7 @@ def estrai_dati(filepath):
     
     # Cerca la riga che contiene "VISURA ORDINARIA" o "VISURA STORICA"
     for i, riga in enumerate(righe):
-        if "VISURA ORDINARIA" in riga or "VISURA STORICA" in riga:
+        if "VISURA" in riga or "FASCICOLO" in riga:
             # Inizia a cercare la ragione sociale dalle righe successive
             ragione_sociale_parti = []
             
