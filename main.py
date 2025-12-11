@@ -198,8 +198,8 @@ def estrai_dati(filepath):
             # ===== DEBUG RAGIONE SOCIALE =====
             st.write("🔍 DEBUG - Analisi testo PDF:")
             st.write(f"Numero totale righe estratte: {len(righe)}")
-            st.write("Prime 20 righe del PDF:")
-            for idx, riga in enumerate(righe[:20]):
+            st.write("Prime 50 righe del PDF:")
+            for idx, riga in enumerate(righe[:50]):
                st.write(f"Riga {idx}: '{riga}'")
                st.write("---")
                st.write(f"Ragione sociale trovata: '{ragione_sociale}'")
